@@ -1,0 +1,701 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🌊 Satellite Flood Risk & Relief Monitor</title>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+  <!-- Leaflet CSS -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+
+  <!-- App Styles -->
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- ============================================================
+       TOP NAVIGATION BAR
+       ============================================================ -->
+  <header class="navbar" role="banner">
+    <div class="nav-brand">
+      <div class="brand-icon" aria-hidden="true">🌊</div>
+      <div>
+        <h1 class="brand-title">Satellite Flood Risk & Relief Monitor</h1>
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <div class="live-stream-badge">
+            <span class="pulse-dot"></span>
+            <span id="liveStatusText">Live Semi-Auto Pipeline</span>
+          </div>
+          <span id="lastUpdatedText" class="brand-subtitle">Last Scene: Loading...</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Main View Navigation Switcher -->
+    <nav class="nav-view-switcher" role="tablist" aria-label="Main Sections">
+      <button id="btnViewMap" class="nav-view-btn active" role="tab" aria-selected="true" aria-controls="view-operations">
+        <i class="fa-solid fa-map-location-dot" aria-hidden="true"></i>
+        <span>Operations Map</span>
+      </button>
+      <button id="btnViewAnalytics" class="nav-view-btn" role="tab" aria-selected="false" aria-controls="view-analytics">
+        <i class="fa-solid fa-satellite" aria-hidden="true"></i>
+        <span>Satellite Analytics</span>
+      </button>
+    </nav>
+
+    <!-- Quick Actions -->
+    <div class="nav-actions">
+      <button id="btnCheckSatellite" class="btn btn-outline btn-sm" title="Check Copernicus CDSE for new satellite passes" aria-label="Poll Copernicus Satellite API">
+        <i class="fa-solid fa-arrows-rotate" aria-hidden="true"></i>
+        <span>Check Satellite</span>
+      </button>
+      <button id="navFindRouteBtn" class="btn btn-outline" aria-label="Open Safe Route Finder">
+        <i class="fa-solid fa-route" style="color: #2563eb;" aria-hidden="true"></i>
+        <span>Safe Route</span>
+      </button>
+      <button id="navOfferHelpBtn" class="btn btn-success" aria-label="Open Offer Help Form">
+        <i class="fa-solid fa-hand-holding-heart" aria-hidden="true"></i>
+        <span>Offer Help</span>
+      </button>
+      <button id="navRequestHelpBtn" class="btn btn-danger" aria-label="Open Request Help Form">
+        <i class="fa-solid fa-triangle-exclamation" aria-hidden="true"></i>
+        <span>Request Help</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- ============================================================
+       MAIN CONTENT CONTAINER (DUAL VIEW)
+       ============================================================ -->
+  <main class="main-container">
+
+    <!-- ============================================================
+         VIEW 1: LIVE OPERATIONS & GIS MAP DASHBOARD (SITE A)
+         ============================================================ -->
+    <div id="view-operations" class="app-view active" role="tabpanel" aria-labelledby="btnViewMap">
+      
+      <!-- Mobile Sidebar Toggle Floating Button -->
+      <button id="btnToggleMobileSidebar" class="mobile-sidebar-toggle" aria-label="Toggle Dashboard Controls Panel">
+        <i class="fa-solid fa-sliders" aria-hidden="true"></i>
+        <span>Controls & Relief Hub</span>
+      </button>
+
+      <!-- Operations Sidebar -->
+      <aside class="sidebar" id="appSidebar" aria-label="Dashboard Control Sidebar">
+        <!-- Tabs Header -->
+        <div class="sidebar-tabs" role="tablist" aria-label="Sidebar Sections">
+          <button class="tab-btn active" data-tab="tab-overview" role="tab" aria-selected="true" aria-controls="tab-overview" id="tabBtnOverview">
+            <i class="fa-solid fa-chart-pie" aria-hidden="true"></i> Overview
+          </button>
+          <button class="tab-btn" data-tab="tab-routing" role="tab" aria-selected="false" aria-controls="tab-routing" id="tabBtnRouting">
+            <i class="fa-solid fa-shield-halved" aria-hidden="true"></i> Safe Route
+          </button>
+          <button class="tab-btn" data-tab="tab-resources" role="tab" aria-selected="false" aria-controls="tab-resources" id="tabBtnResources">
+            <i class="fa-solid fa-people-roof" aria-hidden="true"></i> Relief Hub
+          </button>
+        </div>
+
+        <!-- Tab Contents -->
+        <div class="sidebar-content">
+
+          <!-- ----------------------------------------------------
+               TAB 1: OVERVIEW & SATELLITE STATS
+               ---------------------------------------------------- -->
+          <section id="tab-overview" class="tab-pane active" role="tabpanel" aria-labelledby="tabBtnOverview">
+            <div class="section-title">
+              <h2>Live Satellite Detection Stats</h2>
+              <span id="badgeSatelliteModel" class="source-tag">Sentinel-1A SAR</span>
+            </div>
+
+            <!-- Satellite Coverage Card (Simplified for End Users) -->
+            <div class="pipeline-status-card">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+                <span style="font-size: 11px; font-weight: 700; color: #0369a1; text-transform: uppercase;">🛰️ Satellite Coverage</span>
+                <span id="badgeIngestState" style="font-size: 10px; font-weight: 800; background: #e0f2fe; color: #0369a1; padding: 2px 6px; border-radius: 4px;">LIVE</span>
+              </div>
+              <div style="display: flex; justify-content: space-between; align-items: center; font-size: 12px; color: var(--text-main); margin-bottom: 4px;">
+                <span>Acquisition: <b id="sceneAcqDateText">Aug 21, 2026 05:24 AM</b></span>
+                <span style="color: var(--text-muted); font-size: 11px;">Interval: <b>~6-12 Days</b></span>
+              </div>
+              <details style="margin-top: 6px; font-size: 10px; color: var(--text-muted);">
+                <summary style="cursor: pointer; font-weight: 600; color: #0284c7;">Technical Scene Details</summary>
+                <div id="activeSceneIdText" style="margin-top: 4px; font-family: monospace; color: #475569; word-break: break-all; background: #ffffff; padding: 4px 6px; border-radius: 4px; border: 1px solid #e2e8f0;">
+                  S1D_IW_GRDH_1SDV...
+                </div>
+              </details>
+            </div>
+
+            <div class="stats-grid">
+              <div class="stat-card" tabindex="0">
+                <span class="stat-title">Detected Flood Area</span>
+                <span id="statFloodedArea" class="stat-value">Loading...</span>
+                <span class="stat-badge" style="color: #2563eb;">🌊 Active Extent</span>
+              </div>
+              <div class="stat-card" tabindex="0">
+                <span class="stat-title">High Risk Zones</span>
+                <span id="statHighRisk" class="stat-value">Loading...</span>
+                <span class="stat-badge" style="color: #dc2626;">🔴 High Hazard</span>
+              </div>
+              <div class="stat-card" tabindex="0">
+                <span class="stat-title">Hospitals in Area</span>
+                <span id="statHospitals" class="stat-value">12</span>
+                <span class="stat-badge" style="color: #059669;">🏥 Accessible</span>
+              </div>
+              <div class="stat-card" tabindex="0">
+                <span class="stat-title">Community Relief Posts</span>
+                <span id="statResources" class="stat-value">0</span>
+                <span class="stat-badge" style="color: #d97706;">🤝 Active Points</span>
+              </div>
+            </div>
+
+            <div class="section-title">
+              <h2>Map Layers & Visibility</h2>
+            </div>
+
+            <fieldset style="border: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 8px;">
+              <legend class="sr-only">Toggle Map Layer Visibility</legend>
+              
+              <label class="layer-toggle-label">
+                <input type="checkbox" id="toggleFloodLayer" checked aria-label="Toggle SAR Flood Extent Layer">
+                <span class="legend-box" style="background: #2563eb;"></span>
+                <b>SAR Flood Extent (API Streamed)</b>
+              </label>
+
+              <label class="layer-toggle-label">
+                <input type="checkbox" id="toggleRiskLayer" checked aria-label="Toggle Risk Classification Layer">
+                <span class="legend-box" style="background: #dc2626;"></span>
+                <b>Risk Classification (High / Med / Low)</b>
+              </label>
+
+              <label class="layer-toggle-label">
+                <input type="checkbox" id="toggleHospitalsLayer" checked aria-label="Toggle Hospitals Layer">
+                <span style="font-size: 16px;">🏥</span>
+                <b>Hospitals & Medical Centers</b>
+              </label>
+
+              <label class="layer-toggle-label">
+                <input type="checkbox" id="toggleRoadsLayer" checked aria-label="Toggle Roads Layer">
+                <span class="legend-line" style="background: #1e293b;"></span>
+                <b>Road Network Infrastructure</b>
+              </label>
+
+              <label class="layer-toggle-label">
+                <input type="checkbox" id="toggleOffersLayer" checked aria-label="Toggle Help Offers Layer">
+                <span style="font-size: 16px;">🎁</span>
+                <b>Help Offers (Supply)</b>
+              </label>
+
+              <label class="layer-toggle-label">
+                <input type="checkbox" id="toggleRequestsLayer" checked aria-label="Toggle Help Requests Layer">
+                <span style="font-size: 16px;">🆘</span>
+                <b>Help Requests (Needs)</b>
+              </label>
+            </fieldset>
+
+            <button class="btn btn-outline" style="width: 100%; margin-top: 18px; justify-content: center;" onclick="window.switchAppView('analytics')">
+              <i class="fa-solid fa-satellite"></i> View Satellite Imagery Comparison
+            </button>
+          </section>
+
+          <!-- ----------------------------------------------------
+               TAB 2: SAFER ROUTE FINDER (FEATURE 1)
+               ---------------------------------------------------- -->
+          <section id="tab-routing" class="tab-pane" role="tabpanel" aria-labelledby="tabBtnRouting">
+            <div class="section-title">
+              <h2>Flood-Aware Route Engine</h2>
+              <span class="source-tag">OSRM + Turf.js</span>
+            </div>
+
+            <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 12px;">
+              Calculate emergency evacuation and supply delivery routes that actively analyze and avoid Sentinel-1 flood extent polygons.
+            </p>
+
+            <div class="route-form">
+              <!-- Start Location -->
+              <div class="form-group">
+                <label for="routeStartInput" class="form-label">
+                  <i class="fa-solid fa-location-dot" style="color: #059669;" aria-hidden="true"></i> Start Location (Origin)
+                </label>
+                <div class="input-with-btn">
+                  <input type="text" id="routeStartInput" class="form-control" placeholder="Click map or use GPS / preset" readonly aria-label="Start Coordinates">
+                  <button type="button" id="btnPickStartMap" class="btn-icon" title="Click on map to select start" aria-label="Pick start point on map">
+                    <i class="fa-solid fa-map-pin" aria-hidden="true"></i>
+                  </button>
+                  <button type="button" id="btnUseMyLocation" class="btn-icon" title="Use current GPS location" aria-label="Use current GPS location">
+                    <i class="fa-solid fa-crosshairs" aria-hidden="true"></i>
+                  </button>
+                </div>
+              </div>
+
+              <!-- Destination -->
+              <div class="form-group">
+                <label for="routeEndInput" class="form-label">
+                  <i class="fa-solid fa-flag-checkered" style="color: #dc2626;" aria-hidden="true"></i> Destination
+                </label>
+                <div class="input-with-btn">
+                  <input type="text" id="routeEndInput" class="form-control" placeholder="Click map or select hospital" readonly aria-label="Destination Coordinates">
+                  <button type="button" id="btnPickEndMap" class="btn-icon" title="Click on map to select destination" aria-label="Pick destination point on map">
+                    <i class="fa-solid fa-map-pin" aria-hidden="true"></i>
+                  </button>
+                </div>
+              </div>
+
+              <!-- Presets Dropdown -->
+              <div class="form-group">
+                <label for="routePresetSelect" class="form-label">Or Quick Destination Preset:</label>
+                <select id="routePresetSelect" class="form-control" aria-label="Select destination preset">
+                  <option value="">-- Select Destination Preset --</option>
+                  <option value="91.7712,26.1561">🏥 GMCH - Gauhati Medical College</option>
+                  <option value="91.6885,26.1738">🏥 Narayana Superspeciality Hospital</option>
+                  <option value="91.0045,26.3215">🏥 Barpeta Medical College (FAAMCH)</option>
+                  <option value="91.4421,26.4463">🏥 Nalbari District Civil Hospital</option>
+                  <option value="90.6278,26.1719">🏥 Goalpara Civil Hospital</option>
+                  <option value="92.6841,26.3452">🏥 Nagaon Medical College</option>
+                  <option value="91.7891,26.1424">🏠 Dispur Emergency Relief Camp</option>
+                  <option value="91.5283,26.2481">🏠 Hajo Relief Center</option>
+                </select>
+              </div>
+
+              <div style="display: flex; gap: 8px; margin-top: 14px;">
+                <button type="button" id="btnFindSafeRoute" class="btn btn-primary" style="flex: 2;">
+                  <i class="fa-solid fa-route" aria-hidden="true"></i> Calculate Safe Route
+                </button>
+                <button type="button" id="btnClearRoute" class="btn btn-outline" style="flex: 1;">
+                  Clear
+                </button>
+              </div>
+            </div>
+
+            <!-- Active Route Result Box -->
+            <div id="routeResultCard" class="route-result-card" role="region" aria-live="polite">
+              <div id="routeSafetyBadge" class="route-safety-badge safety-clear">
+                <i class="fa-solid fa-circle-check" aria-hidden="true"></i> 100% Safe Route - Avoids Flood Zones
+              </div>
+
+              <div class="route-metrics-row">
+                <div class="route-metric">
+                  <div class="route-metric-label">Distance</div>
+                  <div id="routeDistanceVal" class="route-metric-value">-- km</div>
+                </div>
+                <div class="route-metric">
+                  <div class="route-metric-label">Est. Time</div>
+                  <div id="routeTimeVal" class="route-metric-value">-- min</div>
+                </div>
+                <div class="route-metric">
+                  <div class="route-metric-label">Flood Risk</div>
+                  <div id="routeRiskVal" class="route-metric-value" style="font-size: 13px;">Clear</div>
+                </div>
+              </div>
+
+              <div id="routeNoticeText" style="font-size: 12px; color: #475569; margin-bottom: 8px; line-height: 1.4;"></div>
+
+              <div style="font-weight: 700; font-size: 12px; margin-top: 10px;">Turn-by-Turn Navigation:</div>
+              <div id="routeTurnSteps" class="turn-directions-box" tabindex="0" aria-label="Step by step navigation directions"></div>
+            </div>
+          </section>
+
+          <!-- ----------------------------------------------------
+               TAB 3: RESOURCE & DONATION CONNECTOR (FEATURE 2)
+               ---------------------------------------------------- -->
+          <section id="tab-resources" class="tab-pane" role="tabpanel" aria-labelledby="tabBtnResources">
+            <div class="section-title">
+              <h2>Community Relief Connector</h2>
+              <span class="source-tag">Real-time</span>
+            </div>
+
+            <div style="display: flex; gap: 8px; margin-bottom: 12px;">
+              <button id="btnOpenOfferModal" class="btn btn-success btn-sm" style="flex: 1;">
+                <i class="fa-solid fa-hand-holding-heart" aria-hidden="true"></i> Offer Help
+              </button>
+              <button id="btnOpenRequestModal" class="btn btn-danger btn-sm" style="flex: 1;">
+                <i class="fa-solid fa-triangle-exclamation" aria-hidden="true"></i> Request Help
+              </button>
+            </div>
+
+            <!-- Type Filter -->
+            <div class="resource-filter-bar" role="group" aria-label="Filter resource posts by type">
+              <button class="filter-chip active" data-filter="all" aria-pressed="true">All (<span id="countAll">0</span>)</button>
+              <button class="filter-chip" data-filter="offer" aria-pressed="false">Offers (<span id="countOffers">0</span>)</button>
+              <button class="filter-chip" data-filter="request" aria-pressed="false">Requests (<span id="countRequests">0</span>)</button>
+            </div>
+
+            <!-- Category Filter -->
+            <div class="form-group">
+              <label for="resourceCategoryFilter" class="sr-only">Filter by Resource Category</label>
+              <select id="resourceCategoryFilter" class="form-control" aria-label="Filter by Resource Category">
+                <option value="all">-- All Aid Categories --</option>
+                <option value="Shelter">🏠 Shelter / Accommodation</option>
+                <option value="Food">🍱 Food & Rations</option>
+                <option value="Water">💧 Clean Water</option>
+                <option value="Medical">💊 Medical Supplies / First Aid</option>
+                <option value="Transport">🚤 Rescue / Boat / Transport</option>
+                <option value="Other">📦 Other Necessities</option>
+              </select>
+            </div>
+
+            <!-- Search -->
+            <div class="form-group">
+              <label for="resourceSearchInput" class="sr-only">Search relief entries</label>
+              <input type="text" id="resourceSearchInput" class="form-control" placeholder="Search by name, item, or area..." aria-label="Search relief entries">
+            </div>
+
+            <!-- Resource List Container -->
+            <div id="resourceListContainer" class="resource-list" tabindex="0" aria-label="Community relief listings">
+              <!-- Dynamic Items Injected Here -->
+            </div>
+          </section>
+
+        </div>
+      </aside>
+
+      <!-- MAP VIEWPORT -->
+      <div id="map" role="region" aria-label="Interactive Satellite Flood Risk and Operations Map"></div>
+
+      <!-- MAP LEGEND OVERLAY -->
+      <div class="map-legend" role="region" aria-label="Map Legend">
+        <div class="legend-title">Map Legend</div>
+        <div class="legend-item"><span class="legend-box" style="background: #2563eb;"></span> Detected Flood Extent</div>
+        <div class="legend-item"><span class="legend-box" style="background: #dc2626;"></span> High Risk Zone</div>
+        <div class="legend-item"><span class="legend-box" style="background: #ea580c;"></span> Medium Risk Zone</div>
+        <div class="legend-item"><span class="legend-box" style="background: #16a34a;"></span> Low Risk Zone</div>
+        <div class="legend-item"><span>🏥</span> Hospital Location</div>
+        <div class="legend-item"><span class="legend-line" style="background: #1e293b;"></span> Road Corridor</div>
+        <div class="legend-item"><span>🎁</span> Relief Offer (Supply)</div>
+        <div class="legend-item"><span>🆘</span> Help Request (Need)</div>
+        <div class="legend-item"><span class="legend-line" style="background: #059669; height: 4px;"></span> Safe Avoidance Route</div>
+      </div>
+    </div>
+
+    <!-- ============================================================
+         VIEW 2: SATELLITE SAR ANALYTICS & IMAGERY PORTAL (SITE B)
+         ============================================================ -->
+    <div id="view-analytics" class="app-view" role="tabpanel" aria-labelledby="btnViewAnalytics">
+      <div class="analytics-container">
+        
+        <!-- Header Banner -->
+        <div class="analytics-header">
+          <div>
+            <h2 class="analytics-title">🛰️ Sentinel-1 SAR Flood Detection & Analytics</h2>
+            <p class="analytics-subtitle">Synthetic Aperture Radar (SAR) dual-polarization backscatter change detection analysis</p>
+          </div>
+          <button class="btn btn-primary" onclick="window.switchAppView('operations')">
+            <i class="fa-solid fa-map-location-dot"></i> Switch to Live Map
+          </button>
+        </div>
+
+        <!-- Executive Metrics Cards Grid -->
+        <div class="executive-metrics-grid">
+          <div class="exec-card exec-card-blue" tabindex="0">
+            <div class="exec-icon">🌊</div>
+            <div class="exec-info">
+              <span class="exec-label">Detected Flood Extent</span>
+              <span id="execFloodedArea" class="exec-value">723.94 km²</span>
+              <span class="exec-caption">Sentinel-1 VV/VH Change Mask</span>
+            </div>
+          </div>
+
+          <div class="exec-card exec-card-purple" tabindex="0">
+            <div class="exec-icon">📊</div>
+            <div class="exec-info">
+              <span class="exec-label">Total Classified Risk</span>
+              <span class="exec-value">660.26 km²</span>
+              <span class="exec-caption">Zonal Hazard Modeling</span>
+            </div>
+          </div>
+
+          <div class="exec-card exec-card-red" tabindex="0">
+            <div class="exec-icon">🔴</div>
+            <div class="exec-info">
+              <span class="exec-label">High Risk Inundation</span>
+              <span class="exec-value">272.15 km²</span>
+              <span class="exec-caption">41.22% of Classified Region</span>
+            </div>
+          </div>
+
+          <div class="exec-card exec-card-orange" tabindex="0">
+            <div class="exec-icon">🟠</div>
+            <div class="exec-info">
+              <span class="exec-label">Medium Risk Inundation</span>
+              <span class="exec-value">190.55 km²</span>
+              <span class="exec-caption">28.86% of Classified Region</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Risk Distribution Visual Bar -->
+        <div class="analytics-card" style="margin-top: 20px;">
+          <h3 class="card-heading">Risk Distribution Breakdown</h3>
+          <div class="risk-bar-container">
+            <div class="risk-bar-segment" style="width: 41.22%; background-color: #dc2626;" title="High Risk: 41.22%">41.2% High</div>
+            <div class="risk-bar-segment" style="width: 28.86%; background-color: #ea580c;" title="Medium Risk: 28.86%">28.9% Med</div>
+            <div class="risk-bar-segment" style="width: 29.92%; background-color: #16a34a;" title="Low Risk: 29.92%">29.9% Low</div>
+          </div>
+
+          <div class="risk-legend-row">
+            <div class="risk-pill pill-high">🔴 High Risk: <b>272.15 km²</b> (41.22%)</div>
+            <div class="risk-pill pill-med">🟠 Medium Risk: <b>190.55 km²</b> (28.86%)</div>
+            <div class="risk-pill pill-low">🟢 Low Risk: <b>197.55 km²</b> (29.92%)</div>
+          </div>
+        </div>
+
+        <!-- Satellite Imagery Comparison Gallery -->
+        <div class="analytics-card" style="margin-top: 20px;">
+          <h3 class="card-heading">🛰️ Sentinel-1 Satellite Imagery Comparison</h3>
+          <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 16px;">
+            Click on any satellite capture below to inspect in high-resolution view.
+          </p>
+
+          <div class="satellite-gallery-grid">
+            
+            <!-- Before Flood -->
+            <div class="gallery-card" onclick="window.openImageZoom('output/before_flood.png', 'Before Flood - 29 June 2024 (Sentinel-1 SAR Base)')">
+              <div class="gallery-img-wrapper">
+                <img src="output/before_flood.png" alt="Before Flood Satellite Image - 29 June 2024" loading="lazy">
+                <span class="gallery-badge badge-before">Before Flood</span>
+              </div>
+              <div class="gallery-caption">
+                <b>29 June 2024</b>
+                <span>Pre-flood SAR baseline backscatter (VV/VH polarization)</span>
+              </div>
+            </div>
+
+            <!-- During Flood -->
+            <div class="gallery-card" onclick="window.openImageZoom('output/during_flood.png', 'During Flood - 11 July 2024 (Sentinel-1 SAR Peak Inundation)')">
+              <div class="gallery-img-wrapper">
+                <img src="output/during_flood.png" alt="During Flood Satellite Image - 11 July 2024" loading="lazy">
+                <span class="gallery-badge badge-during">During Flood</span>
+              </div>
+              <div class="gallery-caption">
+                <b>11 July 2024</b>
+                <span>Peak inundation radar backscatter showing specular reflection</span>
+              </div>
+            </div>
+
+            <!-- SAR Change Detection Heatmap -->
+            <div class="gallery-card" onclick="window.openImageZoom('output/sar_change.png', 'SAR Backscatter Difference Heatmap (June 29 -> July 11)')">
+              <div class="gallery-img-wrapper">
+                <img src="output/sar_change.png" alt="SAR Change Detection Heatmap" loading="lazy">
+                <span class="gallery-badge badge-change">SAR Change Heatmap</span>
+              </div>
+              <div class="gallery-caption">
+                <b>Backscatter Delta (dB)</b>
+                <span>Ratio of During vs Before radar signal attenuation</span>
+              </div>
+            </div>
+
+            <!-- Detected Flood Extent Mask -->
+            <div class="gallery-card" onclick="window.openImageZoom('output/flood_detected.png', 'Classified Flood Extent Mask - 11 July 2024')">
+              <div class="gallery-img-wrapper">
+                <img src="output/flood_detected.png" alt="Classified Flood Extent Mask" loading="lazy">
+                <span class="gallery-badge badge-detected">Detected Flood Mask</span>
+              </div>
+              <div class="gallery-caption">
+                <b>Cleaned Water Mask</b>
+                <span>Thresholded & morphological cleaned flood polygon footprint</span>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Technical Methodology & Infrastructure Exposure -->
+        <div class="analytics-card" style="margin-top: 20px; margin-bottom: 40px;">
+          <h3 class="card-heading">Methodology & Disaster Response Value</h3>
+          <div style="font-size: 13px; color: #334155; line-height: 1.6;">
+            <p style="margin-bottom: 10px;">
+              <b>Radar Reflection Physics:</b> Water creates a smooth specular surface that reflects radar pulses away from the Sentinel-1 sensor, producing sharp decreases in dB backscatter intensity compared to dry land and built terrain.
+            </p>
+            <p style="margin-bottom: 10px;">
+              <b>Zonal Hazard Classification:</b> Detected flood polygons are classified into mutually exclusive hazard tiers. The <b>Safe Route Finder</b> in the Operations Map actively tests driving geometries against these hazard zones to provide dry-corridor evacuation pathways for first responders and civilians.
+            </p>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </main>
+
+  <!-- ============================================================
+       MODAL 1: OFFER HELP FORM (ACCESSIBLE DIALOG)
+       ============================================================ -->
+  <div id="modalOfferHelp" class="modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="modalOfferTitle">
+    <div class="modal-box">
+      <div class="modal-header">
+        <div class="modal-title" id="modalOfferTitle">
+          <i class="fa-solid fa-hand-holding-heart" style="color: #059669;" aria-hidden="true"></i>
+          <span>Offer Help / Relief Supplies</span>
+        </div>
+        <button class="modal-close" data-close="modalOfferHelp" aria-label="Close Offer Help Dialog">&times;</button>
+      </div>
+
+      <form id="formOfferHelp">
+        <div class="form-group">
+          <label for="offerName" class="form-label">Your Name / Organization *</label>
+          <input type="text" id="offerName" class="form-control" placeholder="e.g. Guwahati Relief Volunteers / Dr. Sharma" required>
+        </div>
+
+        <div class="form-group">
+          <label for="offerType" class="form-label">Resource / Aid Type *</label>
+          <select id="offerType" class="form-control" required>
+            <option value="Shelter">🏠 Shelter / Accommodation / Hotel Room</option>
+            <option value="Food">🍱 Food Packs / Dry Rations</option>
+            <option value="Water">💧 Clean Drinking Water (Bottles/Tanks)</option>
+            <option value="Medical">💊 Medical Supplies / First Aid / ORS</option>
+            <option value="Transport">🚤 Boat Rescue / Transport Vehicle</option>
+            <option value="Other">📦 Blankets / Clothes / Other Essentials</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="offerQuantity" class="form-label">Quantity / Capacity Available *</label>
+          <input type="text" id="offerQuantity" class="form-control" placeholder="e.g. 50 food packets, 4 rooms, 200L water" required>
+        </div>
+
+        <div class="form-group">
+          <label for="offerLocation" class="form-label">Location (Lat, Lng or Pick on Map) *</label>
+          <div class="input-with-btn">
+            <input type="text" id="offerLocation" class="form-control" placeholder="Click 'Pick' then click on map" required readonly>
+            <button type="button" id="btnPickOfferLocation" class="btn-icon" title="Pick location on map" aria-label="Pick offer location on map">
+              <i class="fa-solid fa-map-pin" aria-hidden="true"></i> Pick
+            </button>
+          </div>
+          <small style="color: var(--text-muted); font-size: 11px;">Selected location will be shown as a green pin on the map.</small>
+        </div>
+
+        <div class="form-group">
+          <label for="offerContact" class="form-label">Contact Phone or Email *</label>
+          <input type="text" id="offerContact" class="form-control" placeholder="e.g. +91 98765 43210 or aid@org.in" required>
+        </div>
+
+        <div class="form-group">
+          <label for="offerNotes" class="form-label">Additional Details / Notes</label>
+          <textarea id="offerNotes" class="form-control" rows="2" placeholder="e.g. Available between 8 AM - 8 PM at Dispur Community Hall"></textarea>
+        </div>
+
+        <button type="submit" class="btn btn-success" style="width: 100%; margin-top: 10px;">
+          <i class="fa-solid fa-check" aria-hidden="true"></i> Submit Help Offer
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       MODAL 2: REQUEST HELP FORM (ACCESSIBLE DIALOG)
+       ============================================================ -->
+  <div id="modalRequestHelp" class="modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="modalReqTitle">
+    <div class="modal-box">
+      <div class="modal-header">
+        <div class="modal-title" id="modalReqTitle">
+          <i class="fa-solid fa-triangle-exclamation" style="color: #dc2626;" aria-hidden="true"></i>
+          <span>Request Help / Emergency Needs</span>
+        </div>
+        <button class="modal-close" data-close="modalRequestHelp" aria-label="Close Request Help Dialog">&times;</button>
+      </div>
+
+      <form id="formRequestHelp">
+        <div class="form-group">
+          <label for="reqName" class="form-label">Your Name / Group *</label>
+          <input type="text" id="reqName" class="form-control" placeholder="e.g. Hajo Ward 4 Residents / R. Kalita" required>
+        </div>
+
+        <div class="form-group">
+          <label for="reqType" class="form-label">Required Assistance Type *</label>
+          <select id="reqType" class="form-control" required>
+            <option value="Shelter">🏠 Evacuation & Shelter</option>
+            <option value="Food">🍱 Emergency Food / Baby Food</option>
+            <option value="Water">💧 Drinking Water Urgently Needed</option>
+            <option value="Medical">💊 Medical Help / First Aid Kits</option>
+            <option value="Transport">🚤 Boat Rescue / Evacuation Vehicle</option>
+            <option value="Other">📦 Other Urgent Need</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="reqUrgency" class="form-label">Urgency Level *</label>
+          <select id="reqUrgency" class="form-control">
+            <option value="Critical">🔴 Critical (Immediate Evacuation / Medical)</option>
+            <option value="High">🟠 High (Need supplies within 12-24h)</option>
+            <option value="Moderate">🟡 Moderate (General supplies needed)</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="reqQuantity" class="form-label">People Affected / Quantity Needed *</label>
+          <input type="text" id="reqQuantity" class="form-control" placeholder="e.g. 15 families, 4 elderly, need water" required>
+        </div>
+
+        <div class="form-group">
+          <label for="reqLocation" class="form-label">Location (Lat, Lng or Pick on Map) *</label>
+          <div class="input-with-btn">
+            <input type="text" id="reqLocation" class="form-control" placeholder="Click 'Pick' then click on map" required readonly>
+            <button type="button" id="btnPickReqLocation" class="btn-icon" title="Pick location on map" aria-label="Pick request location on map">
+              <i class="fa-solid fa-map-pin" aria-hidden="true"></i> Pick
+            </button>
+          </div>
+          <small style="color: var(--text-muted); font-size: 11px;">Responders will see your location pin on the relief map.</small>
+        </div>
+
+        <div class="form-group">
+          <label for="reqContact" class="form-label">Contact Phone / Alternate *</label>
+          <input type="text" id="reqContact" class="form-control" placeholder="e.g. +91 94350 12345" required>
+        </div>
+
+        <div class="form-group">
+          <label for="reqNotes" class="form-label">Situation Description / Landmarks</label>
+          <textarea id="reqNotes" class="form-control" rows="2" placeholder="e.g. Water level rising near Namghar temple, ground floor submerged"></textarea>
+        </div>
+
+        <button type="submit" class="btn btn-danger" style="width: 100%; margin-top: 10px;">
+          <i class="fa-solid fa-bullhorn" aria-hidden="true"></i> Submit Help Request
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       MODAL 3: SATELLITE IMAGE ZOOM LIGHTBOX
+       ============================================================ -->
+  <div id="modalImageZoom" class="modal-backdrop" role="dialog" aria-modal="true" aria-label="High Resolution Satellite Image Viewer">
+    <div class="modal-box image-lightbox-box">
+      <div class="modal-header">
+        <div class="modal-title" id="imageZoomTitle">Satellite Image View</div>
+        <button class="modal-close" data-close="modalImageZoom" aria-label="Close Image Viewer">&times;</button>
+      </div>
+      <div class="lightbox-img-container">
+        <img id="imageZoomSrc" src="" alt="Zoomed satellite view" style="width: 100%; height: auto; border-radius: var(--radius-sm);">
+      </div>
+    </div>
+  </div>
+
+  <!-- TOAST NOTIFICATION CONTAINER -->
+  <div id="toastContainer" class="toast-container" role="status" aria-live="polite"></div>
+
+  <!-- ============================================================
+       SCRIPTS
+       ============================================================ -->
+  <!-- Leaflet JS -->
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+  <!-- Turf.js (Geospatial Analysis & Intersections) -->
+  <script src="https://unpkg.com/@turf/turf@6.5.0/turf.min.js"></script>
+
+  <!-- Firebase Compat (Firestore for multi-user sync) -->
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+
+  <!-- Application Modules -->
+  <script src="app.js"></script>
+  <script src="routing.js"></script>
+  <script src="resources.js"></script>
+
+</body>
+</html>

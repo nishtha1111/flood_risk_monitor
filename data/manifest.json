@@ -1,0 +1,39 @@
+{
+  "aoi": [
+    90.6445,
+    25.0926,
+    93.163,
+    26.7045
+  ],
+  "aoi_name": "Assam Brahmaputra Basin",
+  "satellite": "Sentinel-1A (C-band SAR)",
+  "polarization": "VV+VH",
+  "product_type": "IW_GRDH_1SDV",
+  "last_check_timestamp": "2026-08-21T13:46:06.370955+00:00",
+  "last_processed_scene_id": "S1D_IW_GRDH_1SDV_20260820T235451_20260820T235516_004216_007BCA_E1FC.SAFE",
+  "last_scene_date": "2026-08-20T23:54:51.630195Z",
+  "history": [
+    {
+      "scene_id": "S1A_IW_GRDH_1SDV_20240629T115716_20240629T115741_054538_06A32B_151F",
+      "acquisition_date": "2024-06-29T11:57:16Z",
+      "role": "baseline_before",
+      "status": "PROCESSED"
+    },
+    {
+      "scene_id": "S1A_IW_GRDH_1SDV_20240711T115715_20240711T115740_054713_06A943_F0AD",
+      "acquisition_date": "2024-07-11T11:57:15Z",
+      "role": "flood_peak",
+      "status": "PROCESSED",
+      "flooded_area_km2": 723.94,
+      "output_geojson": "output/flood_extent.geojson"
+    },
+    {
+      "scene_id": "S1D_IW_GRDH_1SDV_20260820T235451_20260820T235516_004216_007BCA_E1FC.SAFE",
+      "acquisition_date": "2026-08-20T23:54:51.630195Z",
+      "processed_timestamp": "2026-08-21T13:45:46.526992+00:00",
+      "flooded_area_km2": 902.07,
+      "status": "PROCESSED",
+      "output_geojson": "output\\history\\S1D_IW_GRDH_1SDV_20260820T235451_20260820T235516_004216_007BCA_E1FC\\flood_extent.geojson"
+    }
+  ]
+}

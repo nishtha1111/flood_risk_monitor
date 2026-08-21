@@ -1,0 +1,160 @@
+{
+  "type": "FeatureCollection",
+  "name": "roads",
+  "crs": {
+    "type": "name",
+    "properties": {
+      "name": "urn:ogc:def:crs:OGC:1.3:CRS84"
+    }
+  },
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "ROAD-001",
+        "name": "National Highway 27 (NH-27 / East-West Corridor)",
+        "type": "National Highway (4-Lane)",
+        "surface": "Paved Asphalt",
+        "status": "Critical Transport Spine"
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [90.7521, 26.5120],
+          [90.9854, 26.5412],
+          [91.1824, 26.5851],
+          [91.4320, 26.5310],
+          [91.6210, 26.4380],
+          [91.6880, 26.2150],
+          [91.7650, 26.1320],
+          [91.8920, 26.1150],
+          [92.1550, 26.1420],
+          [92.4210, 26.2410],
+          [92.6840, 26.3450]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "ROAD-002",
+        "name": "National Highway 17 (NH-17 / South Bank Highway)",
+        "type": "National Highway",
+        "surface": "Paved Asphalt",
+        "status": "Operational"
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [90.6280, 26.1720],
+          [90.7790, 26.0580],
+          [91.0840, 25.9760],
+          [91.2450, 26.0120],
+          [91.4850, 26.0850],
+          [91.6520, 26.1240],
+          [91.7450, 26.1480]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "ROAD-003",
+        "name": "State Highway 1 (SH-1 Nalbari-Hajo-Guwahati Road)",
+        "type": "State Highway",
+        "surface": "Paved",
+        "status": "Secondary Arterial"
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [91.4420, 26.4460],
+          [91.4720, 26.3810],
+          [91.5280, 26.2480],
+          [91.5900, 26.2050],
+          [91.6880, 26.1740]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "ROAD-004",
+        "name": "Barpeta - Nalbari Connecting Corridor",
+        "type": "State Highway",
+        "surface": "Paved",
+        "status": "Operational"
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [91.0040, 26.3210],
+          [91.1250, 26.3850],
+          [91.2600, 26.4240],
+          [91.3610, 26.4430],
+          [91.4420, 26.4460]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "ROAD-005",
+        "name": "Saraighat Bridge & Guwahati Bypass Link",
+        "type": "Arterial Bridge Link",
+        "surface": "Paved Concrete/Asphalt",
+        "status": "Vital River Crossing"
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [91.6880, 26.1950],
+          [91.6820, 26.1750],
+          [91.6620, 26.1480],
+          [91.7120, 26.1150],
+          [91.7890, 26.1420]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "ROAD-006",
+        "name": "National Highway 715 (NH-715 / Nagaon-Morigaon Link)",
+        "type": "National Highway",
+        "surface": "Paved Asphalt",
+        "status": "Operational"
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [92.1550, 26.1420],
+          [92.2650, 26.1850],
+          [92.3450, 26.2580],
+          [92.5120, 26.3050],
+          [92.6840, 26.3450]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "ROAD-007",
+        "name": "Goalpara - Barpeta River Crossing Link",
+        "type": "Regional Highway",
+        "surface": "Paved",
+        "status": "Operational"
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [90.6280, 26.1720],
+          [90.7250, 26.2400],
+          [90.8030, 26.2500],
+          [90.9120, 26.2850],
+          [91.0040, 26.3210]
+        ]
+      }
+    }
+  ]
+}

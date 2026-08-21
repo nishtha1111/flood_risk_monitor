@@ -1,0 +1,19 @@
+{
+  "scene_id": "S1D_IW_GRDH_1SDV_20260820T235451_20260820T235516_004216_007BCA_E1FC.SAFE",
+  "acquisition_date": "2026-08-20T23:54:51.630195Z",
+  "processed_timestamp": "2026-08-21T13:45:51.231949+00:00",
+  "flooded_area_km2": 902.07,
+  "polygon_count": 221,
+  "risk_breakdown": {
+    "high_km2": 272.15,
+    "medium_km2": 190.55,
+    "low_km2": 197.55
+  },
+  "artifacts": {
+    "geojson": "output\\history\\S1D_IW_GRDH_1SDV_20260820T235451_20260820T235516_004216_007BCA_E1FC\\flood_extent.geojson",
+    "before_png": "output/before_flood.png",
+    "during_png": "output/during_flood.png",
+    "sar_change_png": "output/sar_change.png",
+    "flood_detected_png": "output/flood_detected.png"
+  }
+}

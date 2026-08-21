@@ -1,0 +1,192 @@
+{
+  "type": "FeatureCollection",
+  "name": "hospitals",
+  "crs": {
+    "type": "name",
+    "properties": {
+      "name": "urn:ogc:def:crs:OGC:1.3:CRS84"
+    }
+  },
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "HOSP-001",
+        "name": "Gauhati Medical College & Hospital (GMCH)",
+        "type": "Government Tertiary Hospital",
+        "emergency": "Yes (24/7 Trauma Care)",
+        "beds": 1200,
+        "district": "Kamrup Metropolitan"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [91.7712, 26.1561]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "HOSP-002",
+        "name": "Narayana Superspeciality Hospital",
+        "type": "Private Multispeciality Hospital",
+        "emergency": "Yes (24/7)",
+        "beds": 350,
+        "district": "Kamrup Metropolitan"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [91.6885, 26.1738]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "HOSP-003",
+        "name": "Dispur Polyclinic & Hospital",
+        "type": "Private Hospital",
+        "emergency": "Yes",
+        "beds": 150,
+        "district": "Kamrup Metropolitan"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [91.7891, 26.1424]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "HOSP-004",
+        "name": "FAAMCH - Barpeta Medical College",
+        "type": "Government Medical College",
+        "emergency": "Yes (24/7 Emergency)",
+        "beds": 500,
+        "district": "Barpeta"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [91.0045, 26.3215]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "HOSP-005",
+        "name": "Nalbari District Civil Hospital",
+        "type": "District Civil Hospital",
+        "emergency": "Yes",
+        "beds": 200,
+        "district": "Nalbari"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [91.4421, 26.4463]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "HOSP-006",
+        "name": "Goalpara Civil Hospital",
+        "type": "District Civil Hospital",
+        "emergency": "Yes",
+        "beds": 200,
+        "district": "Goalpara"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [90.6278, 26.1719]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "HOSP-007",
+        "name": "BPBMCH - Nagaon Medical College",
+        "type": "Government Medical College",
+        "emergency": "Yes (24/7)",
+        "beds": 500,
+        "district": "Nagaon"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [92.6841, 26.3452]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "HOSP-008",
+        "name": "Apollo Hospitals Guwahati",
+        "type": "Super Speciality Hospital",
+        "emergency": "Yes",
+        "beds": 220,
+        "district": "Kamrup Metropolitan"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [91.7584, 26.1687]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "HOSP-009",
+        "name": "Morigaon Civil Hospital",
+        "type": "District Civil Hospital",
+        "emergency": "Yes",
+        "beds": 150,
+        "district": "Morigaon"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [92.3456, 26.2578]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "HOSP-010",
+        "name": "Excelcare Hospital",
+        "type": "Multispeciality Hospital",
+        "emergency": "Yes",
+        "beds": 180,
+        "district": "Kamrup Metropolitan"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [91.6624, 26.1482]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "HOSP-011",
+        "name": "Hajo First Referral Unit (FRU)",
+        "type": "Rural Community Health Center",
+        "emergency": "Yes",
+        "beds": 60,
+        "district": "Kamrup Rural"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [91.5283, 26.2481]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "HOSP-012",
+        "name": "Rangia Sub-Divisional Civil Hospital",
+        "type": "Sub-Divisional Hospital",
+        "emergency": "Yes",
+        "beds": 100,
+        "district": "Kamrup Rural"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [91.6312, 26.4385]
+      }
+    }
+  ]
+}
