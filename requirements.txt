@@ -1,11 +1,8 @@
 streamlit
+streamlit-folium
+folium
 geopandas
 rasterio
-contextily
-matplotlib
 shapely
-pandas
-numpy
-folium
+matplotlib
 gunicorn
-Flask
