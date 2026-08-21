@@ -1,5 +1,3 @@
-Flask
-gunicorn
 streamlit
 geopandas
 rasterio
@@ -8,3 +6,6 @@ matplotlib
 shapely
 pandas
 numpy
+folium
+gunicorn
+Flaskgit 
