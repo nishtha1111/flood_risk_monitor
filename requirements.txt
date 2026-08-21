@@ -1,5 +1,6 @@
 Flask
 gunicorn
+streamlit
 geopandas
 rasterio
 contextily
