@@ -1,0 +1,14 @@
+# Satellite data
+*.SAFE/
+*.SAFE.zip
+
+# Python cache
+__pycache__/
+*.pyc
+
+# Virtual environments
+.venv/
+venv/
+
+# Temporary/cache files
+cache/
