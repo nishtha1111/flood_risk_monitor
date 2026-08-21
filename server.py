@@ -27,7 +27,7 @@ import ingest_sentinel1
 
 ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
 app = Flask(__name__, static_folder=None)
-PORT = 8000
+PORT = int(os.environ.get("PORT", 8000))
 MANIFEST_PATH = os.path.join("data", "manifest.json")
 OUTPUT_DIR = "output"
 

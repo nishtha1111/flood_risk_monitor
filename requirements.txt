@@ -1,8 +1,10 @@
-streamlit
-streamlit-folium
-folium
+flask
+requests
+gunicorn
 geopandas
 rasterio
 shapely
 matplotlib
-gunicorn
+streamlit
+streamlit-folium
+folium
