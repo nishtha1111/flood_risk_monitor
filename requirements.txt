@@ -1,0 +1,9 @@
+Flask
+gunicorn
+geopandas
+rasterio
+contextily
+matplotlib
+shapely
+pandas
+numpy
