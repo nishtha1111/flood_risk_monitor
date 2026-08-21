@@ -8,4 +8,4 @@ pandas
 numpy
 folium
 gunicorn
-Flaskgit 
+Flask
