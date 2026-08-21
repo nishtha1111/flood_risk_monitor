@@ -1,11 +1,11 @@
 import os
 from pptx import Presentation
 from pptx.util import Inches, Pt
-from pptx.enum.text import PP_ALIGN, MSO_ANCHOR
+from pptx.enum.text import PP_ALIGN
 from pptx.dml.color import RGBColor
 from pptx.enum.shapes import MSO_SHAPE
 
-# Initialize Presentation
+# Initialize Presentation with standard 16:9 Widescreen
 prs = Presentation()
 prs.slide_width = Inches(13.333)
 prs.slide_height = Inches(7.5)
@@ -31,23 +31,19 @@ def set_slide_background(slide, color):
     fill.fore_color.rgb = color
 
 def add_header(slide, title_text, category_text=""):
-    # Category Pill / Super-header
     if category_text:
         cat_box = slide.shapes.add_textbox(Inches(0.8), Inches(0.4), Inches(11.7), Inches(0.35))
         tf_c = cat_box.text_frame
         tf_c.word_wrap = True
-        tf_c.margin_left = tf_c.margin_top = tf_c.margin_right = tf_c.margin_bottom = 0
         p_c = tf_c.paragraphs[0]
         p_c.text = category_text.upper()
         p_c.font.size = Pt(11)
         p_c.font.bold = True
         p_c.font.color.rgb = PRIMARY
 
-    # Title
     t_box = slide.shapes.add_textbox(Inches(0.8), Inches(0.7), Inches(11.7), Inches(0.65))
     tf = t_box.text_frame
     tf.word_wrap = True
-    tf.margin_left = tf.margin_top = tf.margin_right = tf.margin_bottom = 0
     p = tf.paragraphs[0]
     p.text = title_text
     p.font.size = Pt(22)
@@ -55,21 +51,23 @@ def add_header(slide, title_text, category_text=""):
     p.font.color.rgb = TEXT_MAIN
 
 def create_card(slide, left, top, width, height, title="", title_color=PRIMARY, bg_color=CARD_BG, border_color=CARD_BORDER):
-    # Shape container
+    # Shape container with clean XML-safe line styling
     shape = slide.shapes.add_shape(MSO_SHAPE.ROUNDED_RECTANGLE, left, top, width, height)
     shape.fill.solid()
     shape.fill.fore_color.rgb = bg_color
+    
+    # Safe line definition
     if border_color:
         shape.line.color.rgb = border_color
         shape.line.width = Pt(1.5)
     else:
-        shape.line.fill.background()
+        shape.line.color.rgb = bg_color
+        shape.line.width = Pt(0)
 
     # Text box overlay
     tb = slide.shapes.add_textbox(left + Inches(0.2), top + Inches(0.2), width - Inches(0.4), height - Inches(0.4))
     tf = tb.text_frame
     tf.word_wrap = True
-    tf.margin_left = tf.margin_top = tf.margin_right = tf.margin_bottom = 0
 
     if title:
         p = tf.paragraphs[0]
@@ -84,15 +82,16 @@ def create_card(slide, left, top, width, height, title="", title_color=PRIMARY, 
 # ============================================================
 # SLIDE 1: TITLE SLIDE (DARK MODERN THEME)
 # ============================================================
-slide_layout = prs.slide_layouts[6]
-s1 = prs.slides.add_slide(slide_layout)
+blank_layout = prs.slide_layouts[6]
+s1 = prs.slides.add_slide(blank_layout)
 set_slide_background(s1, BG_DARK)
 
 # Title Badge
-t_badge = s1.shapes.add_shape(MSO_SHAPE.ROUNDED_RECTANGLE, Inches(0.8), Inches(0.9), Inches(4.5), Inches(0.4))
+t_badge = s1.shapes.add_shape(MSO_SHAPE.ROUNDED_RECTANGLE, Inches(0.8), Inches(0.9), Inches(4.8), Inches(0.4))
 t_badge.fill.solid()
 t_badge.fill.fore_color.rgb = RGBColor(30, 41, 59)
 t_badge.line.color.rgb = PRIMARY
+t_badge.line.width = Pt(1)
 tf_b = t_badge.text_frame
 tf_b.paragraphs[0].text = "🛰️ HACKATHON INNOVATION PROJECT"
 tf_b.paragraphs[0].font.size = Pt(11)
@@ -166,19 +165,13 @@ p_f.font.size = Pt(12)
 p_f.font.bold = True
 p_f.font.color.rgb = RGBColor(56, 189, 248)
 
-s1.notes_slide.notes_text_frame.text = (
-    "Good morning judges. We are presenting the Satellite Flood Risk & Relief Monitor. "
-    "Our team combines satellite data engineering, real-time spatial pathfinding, and GIS risk modeling to solve critical disaster management bottlenecks."
-)
-
 # ============================================================
 # SLIDE 2: THE PROBLEM & GROUND REALITY
 # ============================================================
-s2 = prs.slides.add_slide(slide_layout)
+s2 = prs.slides.add_slide(blank_layout)
 set_slide_background(s2, BG_LIGHT)
 add_header(s2, "Disaster Bottlenecks in Monsoon Flood Response", "Context & Ground Reality")
 
-# 4 Key Problem Cards (2x2 Grid)
 p_w = Inches(5.6)
 p_h = Inches(2.4)
 row1_y = Inches(1.6)
@@ -186,52 +179,41 @@ row2_y = Inches(4.3)
 col1_x = Inches(0.8)
 col2_x = Inches(6.8)
 
-# Problem 1
 c1 = create_card(s2, col1_x, row1_y, p_w, p_h, "🌧️ Optical Satellites Fail in Monsoons", ACCENT_RED)
 p = c1.add_paragraph()
 p.text = "Traditional optical satellites (Sentinel-2, Landsat, MODIS) cannot penetrate dense monsoon cloud cover and heavy rainfall. In peak floods, rescue authorities are left completely blind for days."
 p.font.size = Pt(13)
 p.font.color.rgb = TEXT_MAIN
 
-# Problem 2
 c2 = create_card(s2, col2_x, row1_y, p_w, p_h, "🚗 Standard Navigation Traps Rescue Teams", ACCENT_AMBER)
 p = c2.add_paragraph()
 p.text = "Commercial routing platforms (Google Maps, Apple Maps) lack real-time inundation boundaries. They blindly navigate relief trucks and ambulances straight into submerged highways and washed-out bridges."
 p.font.size = Pt(13)
 p.font.color.rgb = TEXT_MAIN
 
-# Problem 3
 c3 = create_card(s2, col1_x, row2_y, p_w, p_h, "⏳ 6–8 Hour Manual GIS Processing Delays", ACCENT_AMBER)
 p = c3.add_paragraph()
 p.text = "Existing disaster GIS workflows require manual satellite downloading, calibration, and human polygon tracing. By the time maps reach ground commanders, floodwaters have already shifted."
 p.font.size = Pt(13)
 p.font.color.rgb = TEXT_MAIN
 
-# Problem 4
 c4 = create_card(s2, col2_x, row2_y, p_w, p_h, "📦 Disconnected Mutual-Aid Logistics", ACCENT_RED)
 p = c4.add_paragraph()
 p.text = "Grassroots volunteers with boats and food supplies have no spatial visibility into where cut-off victims are stranded. SOS calls on social media lack verified geographic coordinates and hazard contexts."
 p.font.size = Pt(13)
 p.font.color.rgb = TEXT_MAIN
 
-s2.notes_slide.notes_text_frame.text = (
-    "In catastrophic events like the Assam floods, standard satellite monitoring fails because clouds block optical sensors. "
-    "Meanwhile, first responders navigating via standard GPS apps get trapped in floodwaters, and manual GIS maps arrive hours too late."
-)
-
 # ============================================================
 # SLIDE 3: SYSTEM ARCHITECTURE & DATA FLOW
 # ============================================================
-s3 = prs.slides.add_slide(slide_layout)
+s3 = prs.slides.add_slide(blank_layout)
 set_slide_background(s3, BG_LIGHT)
 add_header(s3, "End-to-End Automated System Architecture", "How the Solution Operates")
 
-# 3 Architecture Tier Cards (3 Columns)
 t_w = Inches(3.64)
 t_h = Inches(5.1)
 t_y = Inches(1.6)
 
-# Tier 1: Ingestion & Radar Science
 t1 = create_card(s3, Inches(0.8), t_y, t_w, t_h, "1. Ingestion & SAR Science", PRIMARY)
 p = t1.add_paragraph()
 p.text = "🛰️ Copernicus CDSE Poller"
@@ -254,7 +236,6 @@ p.text = "• Water specular reflection backscatter delta:\n  Δσ⁰ (dB) = 10 
 p.font.size = Pt(12)
 p.font.color.rgb = TEXT_MUTED
 
-# Tier 2: Backend API & Storage
 t2 = create_card(s3, Inches(4.84), t_y, t_w, t_h, "2. Backend REST API & Archival", PRIMARY)
 p = t2.add_paragraph()
 p.text = "📁 Versioned Storage Layer"
@@ -277,7 +258,6 @@ p.text = "• GET /api/metadata (Active satellite & pass date)\n• GET /api/flo
 p.font.size = Pt(12)
 p.font.color.rgb = TEXT_MUTED
 
-# Tier 3: Frontend Decision Engine
 t3 = create_card(s3, Inches(8.88), t_y, t_w, t_h, "3. Decision Support & Routing", PRIMARY)
 p = t3.add_paragraph()
 p.text = "🗺️ Leaflet.js Operations Portal"
@@ -300,19 +280,13 @@ p.text = "• Real-time road vs flood intersection tests\n• Dynamic 4-directio
 p.font.size = Pt(12)
 p.font.color.rgb = TEXT_MUTED
 
-s3.notes_slide.notes_text_frame.text = (
-    "Here is our end-to-end architecture. The pipeline automatically checks Copernicus every 60 seconds, "
-    "runs radar change detection, exposes live REST endpoints, and feeds our Leaflet frontend and Safe Route Finder."
-)
-
 # ============================================================
 # SLIDE 4: SATELLITE RADAR SCIENCE & PIPELINE (NISHTHA)
 # ============================================================
-s4 = prs.slides.add_slide(slide_layout)
+s4 = prs.slides.add_slide(blank_layout)
 set_slide_background(s4, BG_LIGHT)
 add_header(s4, "SAR Radar Physics & Automated Data Pipeline", "Nishtha Patel (CSE #1) — Backend & Satellite Pipeline")
 
-# 2 Large Horizontal Cards
 s4_w = Inches(11.7)
 c_top = create_card(s4, Inches(0.8), Inches(1.6), s4_w, Inches(2.4), "📡 Radar Reflection Physics & Specular Attenuation", PRIMARY)
 p = c_top.add_paragraph()
@@ -342,19 +316,13 @@ p.text = "• Vectorized GeoJSON Export: detect_flood.py automatically converts 
 p.font.size = Pt(13)
 p.font.color.rgb = TEXT_MAIN
 
-s4.notes_slide.notes_text_frame.text = (
-    "Nishtha's part: Explaining how Sentinel-1's C-band radar penetrates clouds, how water reflects microwaves away to create dark backscatter deltas, "
-    "and how our Python pipeline automates ingestion and polygon vectorization."
-)
-
 # ============================================================
 # SLIDE 5: OPERATIONS DASHBOARD & UI/UX (MAHATHI)
 # ============================================================
-s5 = prs.slides.add_slide(slide_layout)
+s5 = prs.slides.add_slide(blank_layout)
 set_slide_background(s5, BG_LIGHT)
 add_header(s5, "Unified GIS Operations Dashboard & UI/UX", "Mahathi (CSE #2) — Frontend Architecture & UI/UX")
 
-# 3 Feature Cards
 s5_w = Inches(3.64)
 s5_h = Inches(5.1)
 s5_y = Inches(1.6)
@@ -425,19 +393,13 @@ p.text = "Interactive [🔄 Check Satellite] button initiates on-demand pipeline
 p.font.size = Pt(12.5)
 p.font.color.rgb = TEXT_MAIN
 
-s5.notes_slide.notes_text_frame.text = (
-    "Mahathi's part: Presenting the Leaflet dashboard UI/UX, the top navigation switcher between Operations and Satellite views, "
-    "the high-contrast accessible map legend, and simplified live telemetry."
-)
-
 # ============================================================
 # SLIDE 6: SAFE ROUTE FINDER & SPATIAL INDEXING (MAHATHI)
 # ============================================================
-s6 = prs.slides.add_slide(slide_layout)
+s6 = prs.slides.add_slide(blank_layout)
 set_slide_background(s6, BG_LIGHT)
 add_header(s6, "Hazard-Aware Safe Route Finder Engine", "Mahathi (CSE #2) — Spatial Routing & Optimization")
 
-# 2 Column Comparison / Deep Dive Cards
 s6_w = Inches(5.6)
 s6_h = Inches(5.1)
 
@@ -507,19 +469,13 @@ p.text = "Concurrent Promise.all detour queries, strict 4.5s timeout with emerge
 p.font.size = Pt(12)
 p.font.color.rgb = TEXT_MUTED
 
-s6.notes_slide.notes_text_frame.text = (
-    "Mahathi's part: Demonstrating how our routing engine tests roads against flood polygons, dynamically detours around submerged areas, "
-    "and utilizes spatial indexing to compute safe routes in under 2 milliseconds."
-)
-
 # ============================================================
 # SLIDE 7: COMMUNITY RELIEF HUB (MUTUAL AID LOGISTICS)
 # ============================================================
-s7 = prs.slides.add_slide(slide_layout)
+s7 = prs.slides.add_slide(blank_layout)
 set_slide_background(s7, BG_LIGHT)
 add_header(s7, "Community Relief Hub — Decentralized Mutual Aid", "Humanitarian Coordination")
 
-# 3 Feature Columns
 s7_w = Inches(3.64)
 s7_h = Inches(5.1)
 s7_y = Inches(1.6)
@@ -590,19 +546,13 @@ p.text = "Stores community items across browser sessions, with quick filters by 
 p.font.size = Pt(12.5)
 p.font.color.rgb = TEXT_MAIN
 
-s7.notes_slide.notes_text_frame.text = (
-    "Our Relief Hub connects citizens directly to volunteer supplies on the map, "
-    "allowing stranded communities to post SOS requests and volunteers to list food, medicine, or boats with direct phone contact."
-)
-
 # ============================================================
 # SLIDE 8: GIS RISK MODELING & SCORING (RUDRA)
 # ============================================================
-s8 = prs.slides.add_slide(slide_layout)
+s8 = prs.slides.add_slide(blank_layout)
 set_slide_background(s8, BG_LIGHT)
 add_header(s8, "GIS Multi-Criteria Risk Modeling & Infrastructure Exposure", "Rudra (Mechanical) — GIS Risk Analyst")
 
-# 2 Column Cards
 s8_w = Inches(5.6)
 s8_h = Inches(5.1)
 
@@ -661,24 +611,17 @@ p.text = "Directs NDRF/SDRF boat crews to High Risk zones first, maximizing live
 p.font.size = Pt(12)
 p.font.color.rgb = TEXT_MUTED
 
-s8.notes_slide.notes_text_frame.text = (
-    "Rudra's part: Explaining our QGIS multi-criteria hazard scoring, how we categorized 660 km² of land into high/medium/low risk, "
-    "and how we proactively protect 20+ hospitals and key road corridors."
-)
-
 # ============================================================
 # SLIDE 9: SATELLITE SAR ANALYTICS & VISUAL VERIFICATION
 # ============================================================
-s9 = prs.slides.add_slide(slide_layout)
+s9 = prs.slides.add_slide(blank_layout)
 set_slide_background(s9, BG_LIGHT)
 add_header(s9, "Satellite SAR Analytics & Image Comparison", "Visual Proof of Detection")
 
-# 4 Gallery Cards representing Before / During / Change / Detected
 g_w = Inches(2.7)
 g_h = Inches(5.1)
 g_y = Inches(1.6)
 
-# Box 1
 b1 = create_card(s9, Inches(0.8), g_y, g_w, g_h, "1. Pre-Flood Baseline", PRIMARY)
 p = b1.add_paragraph()
 p.text = "📅 29 June 2024"
@@ -690,7 +633,6 @@ p.text = "• Sentinel-1 SAR Base\n• Normal Brahmaputra river channel\n• Hig
 p.font.size = Pt(11.5)
 p.font.color.rgb = TEXT_MUTED
 
-# Box 2
 b2 = create_card(s9, Inches(3.78), g_y, g_w, g_h, "2. Peak Flood Capture", ACCENT_RED)
 p = b2.add_paragraph()
 p.text = "📅 11 July 2024"
@@ -702,7 +644,6 @@ p.text = "• Peak Inundation Pass\n• Massive specular reflection expansion\n�
 p.font.size = Pt(11.5)
 p.font.color.rgb = TEXT_MUTED
 
-# Box 3
 b3 = create_card(s9, Inches(6.76), g_y, g_w, g_h, "3. SAR Change Heatmap", ACCENT_AMBER)
 p = b3.add_paragraph()
 p.text = "Δσ⁰ Difference (dB)"
@@ -714,7 +655,6 @@ p.text = "• Backscatter Delta Ratio\n• Highlights exact zones of sudden rada
 p.font.size = Pt(11.5)
 p.font.color.rgb = TEXT_MUTED
 
-# Box 4
 b4 = create_card(s9, Inches(9.74), g_y, g_w, g_h, "4. Classified Flood Mask", ACCENT_GREEN)
 p = b4.add_paragraph()
 p.text = "Vector Extent Mask"
@@ -726,63 +666,47 @@ p.text = "• 723.94 km² Extent\n• Thresholded & morphologically cleaned\n•
 p.font.size = Pt(11.5)
 p.font.color.rgb = TEXT_MUTED
 
-s9.notes_slide.notes_text_frame.text = (
-    "In the Satellite Analytics portal, users can inspect high-resolution SAR captures comparing pre-flood baseline vs peak inundation, "
-    "the change detection heatmap, and the resulting cleaned vector mask."
-)
-
 # ============================================================
 # SLIDE 10: COMPLETE TECH STACK & PRODUCTION DEPLOYMENT
 # ============================================================
-s10 = prs.slides.add_slide(slide_layout)
+s10 = prs.slides.add_slide(blank_layout)
 set_slide_background(s10, BG_LIGHT)
 add_header(s10, "Complete Technology Stack & Deployment", "Production Architecture")
 
-# 4 Layer Horizontal Strip Cards
 s10_w = Inches(11.7)
 s10_h = Inches(1.15)
 
-# Layer 1
 l1 = create_card(s10, Inches(0.8), Inches(1.6), s10_w, s10_h, "🛰️ Satellite Data & Sourcing", PRIMARY)
 p = l1.add_paragraph()
 p.text = "Copernicus Data Space Ecosystem (CDSE)  •  Sentinel-1 C-Band SAR (5.405 GHz)  •  OpenStreetMap (OSM) Road Infrastructure Graphs"
 p.font.size = Pt(12.5)
 p.font.color.rgb = TEXT_MAIN
 
-# Layer 2
 l2 = create_card(s10, Inches(0.8), Inches(2.9), s10_w, s10_h, "⚙️ Data Processing & GIS Analytics", PRIMARY)
 p = l2.add_paragraph()
 p.text = "Python 3.14  •  Rasterio  •  GeoPandas  •  Shapely  •  Scipy Ndimage  •  QGIS 3.x Spatial Analysis & Proximity Buffering"
 p.font.size = Pt(12.5)
 p.font.color.rgb = TEXT_MAIN
 
-# Layer 3
 l3 = create_card(s10, Inches(0.8), Inches(4.2), s10_w, s10_h, "💻 Backend API & Web GIS Frontend", PRIMARY)
 p = l3.add_paragraph()
 p.text = "Flask REST API  •  Gunicorn WSGI  •  Leaflet.js 1.9  •  Turf.js Spatial Math  •  OSRM Highway Routing Engine  •  HTML5/CSS3/Vanilla JS"
 p.font.size = Pt(12.5)
 p.font.color.rgb = TEXT_MAIN
 
-# Layer 4
 l4 = create_card(s10, Inches(0.8), Inches(5.5), s10_w, s10_h, "☁️ Cloud Deployment & Version Control", ACCENT_GREEN)
 p = l4.add_paragraph()
 p.text = "Render Cloud Web Service (Dynamic $PORT)  •  Procfile / render.yaml  •  Git / GitHub CI/CD  •  100% Open Source"
 p.font.size = Pt(12.5)
 p.font.color.rgb = TEXT_MAIN
 
-s10.notes_slide.notes_text_frame.text = (
-    "Our technology stack is 100% open-source, spanning Sentinel-1 radar data, Python geospatial processing, "
-    "QGIS risk analysis, Leaflet.js frontend, OSRM routing, and cloud deployment on Render."
-)
-
 # ============================================================
 # SLIDE 11: FEASIBILITY, SCALABILITY & ECONOMICS (RUDRA)
 # ============================================================
-s11 = prs.slides.add_slide(slide_layout)
+s11 = prs.slides.add_slide(blank_layout)
 set_slide_background(s11, BG_LIGHT)
 add_header(s11, "Operational Feasibility, Scalability & Disaster Economics", "Rudra (Mechanical) — Economics & Feasibility")
 
-# 3 Pillars
 s11_w = Inches(3.64)
 s11_h = Inches(5.1)
 s11_y = Inches(1.6)
@@ -853,18 +777,12 @@ p.text = "Runs comfortably on lightweight cloud servers costing less than $10/mo
 p.font.size = Pt(12.5)
 p.font.color.rgb = TEXT_MAIN
 
-s11.notes_slide.notes_text_frame.text = (
-    "Rudra's part: Our solution has zero licensing costs using open data, scales to thousands of concurrent users because spatial math runs in the browser, "
-    "and costs less than ten dollars a month to operate."
-)
-
 # ============================================================
 # SLIDE 12: REAL-WORLD IMPACT & EVALUATION CONCLUSION
 # ============================================================
-s12 = prs.slides.add_slide(slide_layout)
+s12 = prs.slides.add_slide(blank_layout)
 set_slide_background(s12, BG_DARK)
 
-# Title
 t12_box = s12.shapes.add_textbox(Inches(0.8), Inches(0.8), Inches(11.7), Inches(1.2))
 tf12 = t12_box.text_frame
 p12 = tf12.paragraphs[0]
@@ -879,12 +797,10 @@ p12_sub.font.size = Pt(15)
 p12_sub.font.color.rgb = RGBColor(148, 163, 184)
 p12_sub.space_before = Pt(4)
 
-# 3 Impact Stat Boxes
 imp_w = Inches(3.64)
 imp_h = Inches(4.2)
 imp_y = Inches(2.2)
 
-# Stat 1
 s1 = create_card(s12, Inches(0.8), imp_y, imp_w, imp_h, "⏱️ 6h ➔ 30s Latency", PRIMARY, RGBColor(30, 41, 59), RGBColor(51, 65, 85))
 p = s1.add_paragraph()
 p.text = "Rapid Decision Speed"
@@ -896,7 +812,6 @@ p.text = "Replaces 6–8 hours of manual satellite downloading and GIS polygon t
 p.font.size = Pt(12)
 p.font.color.rgb = RGBColor(148, 163, 184)
 
-# Stat 2
 s2 = create_card(s12, Inches(4.84), imp_y, imp_w, imp_h, "🚑 Zero Stranded Teams", ACCENT_GREEN, RGBColor(30, 41, 59), RGBColor(51, 65, 85))
 p = s2.add_paragraph()
 p.text = "First Responder Safety"
@@ -908,7 +823,6 @@ p.text = "Safe Route Finder actively prevents ambulances and relief trucks from 
 p.font.size = Pt(12)
 p.font.color.rgb = RGBColor(148, 163, 184)
 
-# Stat 3
 s3 = create_card(s12, Inches(8.88), imp_y, imp_w, imp_h, "🤝 Localized Mutual Aid", ACCENT_AMBER, RGBColor(30, 41, 59), RGBColor(51, 65, 85))
 p = s3.add_paragraph()
 p.text = "Empowering Communities"
@@ -920,7 +834,6 @@ p.text = "Connects stranded victims needing water, medical aid, or boats directl
 p.font.size = Pt(12)
 p.font.color.rgb = RGBColor(148, 163, 184)
 
-# Footer Conclusion
 fc_box = s12.shapes.add_textbox(Inches(0.8), Inches(6.5), Inches(11.7), Inches(0.5))
 tf_fc = fc_box.text_frame
 p_fc = tf_fc.paragraphs[0]
@@ -930,12 +843,7 @@ p_fc.font.bold = True
 p_fc.font.color.rgb = RGBColor(56, 189, 248)
 p_fc.alignment = PP_ALIGN.CENTER
 
-s12.notes_slide.notes_text_frame.text = (
-    "In conclusion: our platform reduces disaster decision latency from hours to seconds, guarantees first responder safety through dynamic dry routing, "
-    "and connects community aid directly on the map. We invite the judges to explore the live website."
-)
-
 # Save presentation
 output_pptx = "Satellite_Flood_Risk_Monitor_Presentation.pptx"
 prs.save(output_pptx)
-print(f"Presentation successfully created and saved to {output_pptx}")
+print(f"[OK] Clean XML-validated PPTX successfully saved to {output_pptx}")

@@ -158,6 +158,11 @@ def index():
     return send_from_directory(ROOT_DIR, "index.html")
 
 
+@app.route("/presentation")
+def presentation_page():
+    return send_from_directory(ROOT_DIR, "presentation.html")
+
+
 @app.route("/<path:filename>")
 def serve_static_file(filename):
     full_path = os.path.join(ROOT_DIR, filename)

@@ -1,0 +1,723 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Satellite Flood Risk & Relief Monitor — Pitch Deck</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <style>
+    :root {
+      --bg-dark: #0f172a;
+      --bg-light: #f8fafc;
+      --card-bg: #ffffff;
+      --primary: #0284c7;
+      --primary-dark: #0369a1;
+      --accent-green: #059669;
+      --accent-red: #dc2626;
+      --accent-amber: #d97706;
+      --text-main: #0f172a;
+      --text-muted: #64748b;
+      --border: #e2e8f0;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    }
+
+    body {
+      background-color: #0b0f19;
+      color: var(--text-main);
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    /* Top Navigation Bar */
+    header {
+      background: #1e293b;
+      padding: 10px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      color: #ffffff;
+      border-bottom: 1px solid #334155;
+      z-index: 10;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 700;
+      font-size: 16px;
+    }
+
+    .brand span {
+      color: #38bdf8;
+    }
+
+    .controls {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .btn-nav {
+      background: #334155;
+      color: #ffffff;
+      border: 1px solid #475569;
+      padding: 6px 14px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 13px;
+      transition: all 0.2s;
+    }
+
+    .btn-nav:hover {
+      background: #0284c7;
+      border-color: #0284c7;
+    }
+
+    .btn-nav:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+
+    .slide-counter {
+      font-size: 14px;
+      font-weight: 700;
+      color: #94a3b8;
+      min-width: 70px;
+      text-align: center;
+    }
+
+    /* Main Slide Stage */
+    .stage {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .slide-wrapper {
+      width: 100%;
+      max-width: 1280px;
+      aspect-ratio: 16 / 9;
+      background: var(--bg-light);
+      border-radius: 12px;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+      display: none;
+      flex-direction: column;
+      padding: 36px 44px;
+      position: relative;
+      overflow-y: auto;
+    }
+
+    .slide-wrapper.active {
+      display: flex;
+    }
+
+    /* Dark Slide Styling */
+    .slide-dark {
+      background: var(--bg-dark);
+      color: #ffffff;
+    }
+
+    .slide-dark .category-pill {
+      background: #1e293b;
+      color: #38bdf8;
+      border: 1px solid #0284c7;
+    }
+
+    .slide-dark .slide-title {
+      color: #ffffff;
+    }
+
+    .slide-dark .card {
+      background: #1e293b;
+      border-color: #334155;
+      color: #e2e8f0;
+    }
+
+    .slide-dark .card p, .slide-dark .card li {
+      color: #94a3b8;
+    }
+
+    /* Typography & Headers */
+    .category-pill {
+      display: inline-block;
+      font-size: 11px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--primary);
+      margin-bottom: 6px;
+    }
+
+    .slide-title {
+      font-size: 26px;
+      font-weight: 800;
+      color: var(--text-main);
+      margin-bottom: 20px;
+    }
+
+    .slide-subtitle {
+      font-size: 15px;
+      color: var(--text-muted);
+      margin-top: -14px;
+      margin-bottom: 24px;
+    }
+
+    /* Layout Grids */
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+      flex: 1;
+    }
+
+    .grid-2 {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 20px;
+      flex: 1;
+    }
+
+    .grid-4 {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+      flex: 1;
+    }
+
+    .grid-stack {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      flex: 1;
+    }
+
+    /* Cards */
+    .card {
+      background: var(--card-bg);
+      border: 1.5px solid var(--border);
+      border-radius: 10px;
+      padding: 18px 20px;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.03);
+    }
+
+    .card-title {
+      font-size: 16px;
+      font-weight: 700;
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .card p, .card li {
+      font-size: 13px;
+      line-height: 1.6;
+      color: #334155;
+    }
+
+    .card ul {
+      list-style-position: inside;
+      margin-top: 6px;
+    }
+
+    .card li {
+      margin-bottom: 6px;
+    }
+
+    .badge-tag {
+      font-size: 11px;
+      padding: 3px 8px;
+      border-radius: 4px;
+      font-weight: 700;
+      display: inline-block;
+      margin-bottom: 8px;
+    }
+
+    /* Speaker Notes Bar */
+    footer {
+      background: #111827;
+      padding: 10px 24px;
+      color: #94a3b8;
+      font-size: 13px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      border-top: 1px solid #1f2937;
+    }
+
+    footer b {
+      color: #38bdf8;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Controls -->
+  <header>
+    <div class="brand">
+      <i class="fa-solid fa-satellite" style="color: #38bdf8;"></i>
+      <span>FloodRiskMonitor</span> Presentation Deck
+    </div>
+    <div class="controls">
+      <button class="btn-nav" id="btnPrev" onclick="navigateSlide(-1)"><i class="fa-solid fa-arrow-left"></i> Prev</button>
+      <span class="slide-counter" id="slideCount">1 / 12</span>
+      <button class="btn-nav" id="btnNext" onclick="navigateSlide(1)">Next <i class="fa-solid fa-arrow-right"></i></button>
+      <a href="Satellite_Flood_Risk_Monitor_Presentation.pptx" download class="btn-nav" style="background: #059669; border-color: #059669; text-decoration: none;">
+        <i class="fa-solid fa-download"></i> Download PPTX
+      </a>
+      <a href="https://flood-risk-monitor.onrender.com/" target="_blank" class="btn-nav" style="text-decoration: none;">
+        <i class="fa-solid fa-arrow-up-right-from-square"></i> Live Demo
+      </a>
+    </div>
+  </header>
+
+  <!-- Slide Stage -->
+  <div class="stage">
+
+    <!-- SLIDE 1: Title -->
+    <div class="slide-wrapper slide-dark active" id="slide-1" data-notes="Good morning judges. We are presenting the Satellite Flood Risk & Relief Monitor, combining radar satellite intelligence with real-time evacuation routing.">
+      <div style="margin-bottom: 24px;">
+        <div class="category-pill" style="padding: 4px 12px; border-radius: 4px;">🛰️ HACKATHON INNOVATION PROJECT</div>
+        <h1 style="font-size: 38px; font-weight: 800; color: #ffffff; margin-top: 10px;">Satellite Flood Risk & Relief Monitor</h1>
+        <p style="font-size: 16px; color: #94a3b8; margin-top: 8px;">
+          Automated Sentinel-1 SAR Flood Inundation Mapping, Real-Time Safe Evacuation Routing & Community Relief Connector
+        </p>
+      </div>
+
+      <div class="grid-3">
+        <div class="card">
+          <div class="card-title" style="color: #38bdf8;">🛰️ Nishtha Patel (CSE #1)</div>
+          <b style="font-size: 13px; color: #e2e8f0; margin-bottom: 6px;">Lead Satellite Ingestion & SAR Pipeline</b>
+          <ul>
+            <li>Copernicus CDSE OAuth2 Automation</li>
+            <li>Radar Backscatter Attenuation Δσ⁰</li>
+            <li>GeoJSON Vector Export & Flask API</li>
+          </ul>
+        </div>
+
+        <div class="card">
+          <div class="card-title" style="color: #38bdf8;">💻 Mahathi (CSE #2)</div>
+          <b style="font-size: 13px; color: #e2e8f0; margin-bottom: 6px;">Frontend Architect & Safe Routing</b>
+          <ul>
+            <li>Leaflet.js Unified Dual-Portal UI/UX</li>
+            <li>Safe Route Finder (OSRM + Turf.js)</li>
+            <li>Spatial BBOX Indexing & Mutual-Aid Hub</li>
+          </ul>
+        </div>
+
+        <div class="card">
+          <div class="card-title" style="color: #38bdf8;">⚙️ Rudra (Mechanical)</div>
+          <b style="font-size: 13px; color: #e2e8f0; margin-bottom: 6px;">GIS Risk Analyst & Disaster Economics</b>
+          <ul>
+            <li>QGIS Multi-Criteria Hazard Scoring</li>
+            <li>Hospital & Road Exposure Modeling</li>
+            <li>Operational Feasibility & Economics</li>
+          </ul>
+        </div>
+      </div>
+
+      <div style="margin-top: 20px; font-size: 13px; font-weight: 700; color: #38bdf8;">
+        🌐 Live Deployment: https://flood-risk-monitor.onrender.com/ &nbsp;|&nbsp; 📂 GitHub: github.com/nishtha1111/flood_risk_monitor
+      </div>
+    </div>
+
+    <!-- SLIDE 2: Problem -->
+    <div class="slide-wrapper" id="slide-2" data-notes="Monsoon cloud cover blinds optical satellites, standard navigation apps lead rescue trucks into floodwaters, and manual GIS maps arrive hours too late.">
+      <div class="category-pill">Context & Ground Reality</div>
+      <h2 class="slide-title">Disaster Bottlenecks in Monsoon Flood Response</h2>
+      
+      <div class="grid-2">
+        <div class="card" style="border-left: 4px solid var(--accent-red);">
+          <div class="card-title" style="color: var(--accent-red);">🌧️ Optical Satellites Fail in Monsoons</div>
+          <p>Traditional optical satellites (Sentinel-2, Landsat, MODIS) cannot penetrate dense monsoon cloud cover and heavy rainfall. In peak floods, rescue authorities are left completely blind for days.</p>
+        </div>
+
+        <div class="card" style="border-left: 4px solid var(--accent-amber);">
+          <div class="card-title" style="color: var(--accent-amber);">🚗 Standard Navigation Traps Rescue Teams</div>
+          <p>Commercial routing platforms (Google Maps, Apple Maps) lack real-time inundation boundaries. They blindly navigate relief trucks and ambulances straight into submerged highways and washed-out bridges.</p>
+        </div>
+
+        <div class="card" style="border-left: 4px solid var(--accent-amber);">
+          <div class="card-title" style="color: var(--accent-amber);">⏳ 6–8 Hour Manual GIS Processing Delays</div>
+          <p>Existing disaster GIS workflows require manual satellite downloading, calibration, and human polygon tracing. By the time maps reach ground commanders, floodwaters have already shifted.</p>
+        </div>
+
+        <div class="card" style="border-left: 4px solid var(--accent-red);">
+          <div class="card-title" style="color: var(--accent-red);">📦 Disconnected Mutual-Aid Logistics</div>
+          <p>Grassroots volunteers with boats and food supplies have no spatial visibility into where cut-off victims are stranded. SOS calls on social media lack verified geographic coordinates and hazard contexts.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE 3: Architecture -->
+    <div class="slide-wrapper" id="slide-3" data-notes="Our end-to-end automated architecture connects Copernicus satellite radar directly to our Flask API, Leaflet map, and Safe Route Finder.">
+      <div class="category-pill">How the Solution Operates</div>
+      <h2 class="slide-title">End-to-End Automated System Architecture</h2>
+
+      <div class="grid-3">
+        <div class="card">
+          <div class="card-title" style="color: var(--primary);">1. Ingestion & Radar Science</div>
+          <b>🛰️ Copernicus CDSE Poller</b>
+          <p style="font-size: 12px; margin-bottom: 8px;">OAuth2 automated token querying over Assam AOI for newest Sentinel-1 IW GRDH scene.</p>
+          <b>⚡ Radar Physics Engine</b>
+          <p style="font-size: 12px;">Calculates backscatter attenuation Δσ⁰ (≤ -3.5 dB) caused by specular reflection on flood water.</p>
+        </div>
+
+        <div class="card">
+          <div class="card-title" style="color: var(--primary);">2. Backend REST API & Storage</div>
+          <b>📁 Versioned Storage</b>
+          <p style="font-size: 12px; margin-bottom: 8px;">Archived temporal runs under output/history/<scene_id>/ with area (km²) metrics.</p>
+          <b>🔌 Live Flask / Gunicorn API</b>
+          <p style="font-size: 12px;">Serves /api/metadata, /api/flood-extent/latest, and async trigger endpoints on dynamic $PORT.</p>
+        </div>
+
+        <div class="card">
+          <div class="card-title" style="color: var(--primary);">3. Decision Support & Routing</div>
+          <b>🗺️ Leaflet.js Operations Portal</b>
+          <p style="font-size: 12px; margin-bottom: 8px;">High-contrast GIS layers for flood extents, risk zones, hospitals, and road networks.</p>
+          <b>🛡️ Turf.js + OSRM Safe Router</b>
+          <p style="font-size: 12px;">Spatial BBOX pre-filtered collision testing and 4-directional dry bypass detour generation.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE 4: Nishtha -->
+    <div class="slide-wrapper" id="slide-4" data-notes="Nishtha's script: Explaining C-band microwave cloud penetration, specular surface reflection deltas, and automated GeoJSON vector export.">
+      <div class="category-pill">Nishtha Patel (CSE #1) — Backend & Satellite Pipeline</div>
+      <h2 class="slide-title">SAR Radar Physics & Automated Data Pipeline</h2>
+
+      <div class="grid-stack">
+        <div class="card">
+          <div class="card-title" style="color: var(--primary);">📡 Radar Reflection Physics & Specular Attenuation</div>
+          <ul>
+            <li><b>All-Weather C-Band SAR:</b> Sentinel-1 emits 5.405 GHz microwave pulses that completely ignore clouds, monsoon rain, and darkness.</li>
+            <li><b>Specular Surface Reflection:</b> Dry ground and forest create rough diffuse scatter (high backscatter dB: -12 to -8 dB). Smooth standing water reflects radar pulses away like a mirror (low backscatter dB: -22 to -18 dB).</li>
+            <li><b>Change Detection Algorithm:</b> Ratio between pre-flood baseline (29 June 2024) and peak inundation (11 July 2024) isolates exact flooded pixels with morphological speckle filtering.</li>
+          </ul>
+        </div>
+
+        <div class="card">
+          <div class="card-title" style="color: var(--accent-green);">⚙️ Automated Semi-Live Ingestion & Export Engine</div>
+          <ul>
+            <li><b>Programmatic Copernicus Ingestion:</b> ingest_sentinel1.py queries OData catalogue for IW_GRDH_1SDV products over the AOI [90.64, 25.09, 93.16, 26.70] with OAuth2 credentials and open fallback.</li>
+            <li><b>State Tracking Manifest:</b> data/manifest.json compares scene timestamps to skip redundant processing during the 6–12 day orbital revisit cycle.</li>
+            <li><b>Vectorized GeoJSON Export:</b> detect_flood.py automatically converts cleaned binary raster masks into EPSG:4326 WGS84 GeoJSON polygons with total area calculations (723.94 km² active extent).</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE 5: Mahathi UI -->
+    <div class="slide-wrapper" id="slide-5" data-notes="Mahathi's script: Presenting the Leaflet dashboard UI/UX, top navigation view switcher, simplified live telemetry card, and dynamic 60s polling.">
+      <div class="category-pill">Mahathi (CSE #2) — Frontend Architecture & UI/UX</div>
+      <h2 class="slide-title">Unified GIS Operations Dashboard & UI/UX</h2>
+
+      <div class="grid-3">
+        <div class="card">
+          <div class="card-title" style="color: var(--primary);">🗺️ Dual-View Unified Portal</div>
+          <b>Seamless View Switcher</b>
+          <p style="font-size: 12px; margin-bottom: 8px;">Toggle between field Operations Map and deep Satellite Analytics without page reloads.</p>
+          <b>High-Contrast GIS Layers</b>
+          <p style="font-size: 12px;">Toggle Flood Extent, Risk tiers, Roads, and Hospitals with solid black WCAG AA text (#000000).</p>
+        </div>
+
+        <div class="card">
+          <div class="card-title" style="color: var(--primary);">🛰️ Simplified Live Telemetry</div>
+          <b>Human-Centric Status Card</b>
+          <p style="font-size: 12px; margin-bottom: 8px;">Displays Acquisition Date (Aug 21, 2026), ~6–12 Day Interval, and pulsing green LIVE badge.</p>
+          <b>Collapsible Technical Scene</b>
+          <p style="font-size: 12px;">Raw satellite product hashes tucked neatly inside an expandable details toggle for debugging.</p>
+        </div>
+
+        <div class="card">
+          <div class="card-title" style="color: var(--primary);">🔄 Live Polling & Controls</div>
+          <b>Flicker-Free Layer Updates</b>
+          <p style="font-size: 12px; margin-bottom: 8px;">Auto-polls backend API every 60s. Ingests fresh polygons seamlessly without resetting map view.</p>
+          <b>Manual Satellite Trigger</b>
+          <p style="font-size: 12px;">Interactive [🔄 Check Satellite] button initiates on-demand pipeline polling with live toast alerts.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE 6: Safe Routing -->
+    <div class="slide-wrapper" id="slide-6" data-notes="Mahathi's script: Demonstrating how our routing engine tests roads against flood polygons, dynamically detours around submerged areas, and computes routes in < 2ms.">
+      <div class="category-pill">Mahathi (CSE #2) — Spatial Routing & Optimization</div>
+      <h2 class="slide-title">Hazard-Aware Safe Route Finder Engine</h2>
+
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-title" style="color: var(--primary);">🛡️ Dynamic Flood Avoidance Algorithm</div>
+          <ul>
+            <li><b>1. Point-in-Polygon Check:</b> Instantly evaluates if origin or destination hospital is submerged in floodwaters.</li>
+            <li><b>2. Multi-Candidate OSRM Pathfinding:</b> Fetches primary and alternative highway geometries via Open Source Routing Machine.</li>
+            <li><b>3. 4-Directional Bypass Detour:</b> If primary road is cut by water, automatically tests North/South/East/West elevated bypass waypoints (~5km buffer) to find a dry corridor.</li>
+          </ul>
+        </div>
+
+        <div class="card">
+          <div class="card-title" style="color: var(--accent-green);">⚡ Spatial BBOX Indexing (4.6x Speedup)</div>
+          <ul>
+            <li><b>The Bottleneck Solved:</b> Testing candidate routes against 221 complex flood polygons across Assam used to take seconds and freeze the browser.</li>
+            <li><b>Spatial BBOX Pre-Filtering (&lt; 2ms):</b> Pre-computes [minX, minY, maxX, maxY] for each polygon. Fast O(1) rectangle overlap rejects 98% of distant polygons instantly.</li>
+            <li><b>Timeout Guards & Memory LRU Cache:</b> Concurrent Promise.all detour queries, strict 4.5s timeout with emergency vector fallback, and sub-millisecond route caching.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE 7: Relief Hub -->
+    <div class="slide-wrapper" id="slide-7" data-notes="Our Relief Hub connects citizens directly to volunteer supplies on the map, allowing stranded communities to post SOS requests and volunteers to list aid with direct phone contact.">
+      <div class="category-pill">Humanitarian Coordination</div>
+      <h2 class="slide-title">Community Relief Hub — Decentralized Mutual Aid</h2>
+
+      <div class="grid-3">
+        <div class="card" style="border-left: 4px solid var(--accent-red);">
+          <div class="card-title" style="color: var(--accent-red);">🚨 Emergency SOS Requests</div>
+          <p>Allows stranded flood victims to request urgent assistance with category tagging:</p>
+          <ul style="margin-top: 6px;">
+            <li>🍞 Drinking Water & Food Rations</li>
+            <li>💊 Emergency Medical Aid</li>
+            <li>🚤 Boat Evacuation Needed</li>
+            <li>⛺ Emergency Dry Shelter</li>
+          </ul>
+        </div>
+
+        <div class="card" style="border-left: 4px solid var(--accent-green);">
+          <div class="card-title" style="color: var(--accent-green);">🤝 Volunteer Supply Offers</div>
+          <p>NGOs and local volunteers register available relief resources:</p>
+          <ul style="margin-top: 6px;">
+            <li>Dry ration kits & clean water tanks</li>
+            <li>First-aid & medical supplies</li>
+            <li>Inflatable rescue dinghies</li>
+            <li>Direct phone dialer & WhatsApp contact</li>
+          </ul>
+        </div>
+
+        <div class="card" style="border-left: 4px solid var(--primary);">
+          <div class="card-title" style="color: var(--primary);">📍 Live Spatial Matching</div>
+          <p>Pins render live on the map alongside active flood polygons:</p>
+          <ul style="margin-top: 6px;">
+            <li>Green Pins: Available Supply Drops</li>
+            <li>Red Pins: Urgent Citizen SOS Calls</li>
+            <li>Persistent LocalStorage caching</li>
+            <li>Category & urgency filters</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE 8: Rudra GIS -->
+    <div class="slide-wrapper" id="slide-8" data-notes="Rudra's script: Explaining QGIS multi-criteria hazard scoring, classifying 660 km² into risk zones, and proactively monitoring 20+ hospitals and highways.">
+      <div class="category-pill">Rudra (Mechanical) — GIS Risk Analyst</div>
+      <h2 class="slide-title">GIS Multi-Criteria Risk Modeling & Infrastructure Exposure</h2>
+
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-title" style="color: var(--primary);">📊 Multi-Criteria Hazard Scoring (QGIS)</div>
+          <p style="font-family: monospace; font-size: 11.5px; background: #f1f5f9; padding: 6px; border-radius: 4px; margin-bottom: 8px;">
+            Risk = w_f·(Flood Depth) + w_h·(1 / Dist_Hospital) + w_r·(Road Severance)
+          </p>
+          <ul>
+            <li><b>🔴 High Risk: 272.15 km² (41.22%)</b> — Submerged areas within 2km of hospitals or blocking main arterial highways.</li>
+            <li><b>🟠 Medium Risk: 190.55 km² (28.86%)</b> — Flooded secondary agricultural and local road networks.</li>
+            <li><b>🟢 Low Risk: 197.55 km² (29.92%)</b> — Inundated open floodplains far from human settlement.</li>
+          </ul>
+        </div>
+
+        <div class="card">
+          <div class="card-title" style="color: var(--primary);">🏥 Critical Asset Exposure & Logistics</div>
+          <ul>
+            <li><b>20+ Hospitals Actively Monitored:</b> Tracks emergency bed capacities, surgical centers, and access road status across Kamrup, Barpeta, and Goalpara districts.</li>
+            <li><b>Road Cut-Off Proactive Warning:</b> Identifies critical transport corridors at risk of complete isolation before peak water levels crest, allowing early medical airlifts.</li>
+            <li><b>Actionable Relief Prioritization:</b> Directs NDRF/SDRF boat crews to High Risk zones first, maximizing lives saved per rescue sortie.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE 9: Satellite Analytics Gallery -->
+    <div class="slide-wrapper" id="slide-9" data-notes="In the Satellite Analytics portal, users can inspect high-resolution SAR captures comparing pre-flood baseline vs peak inundation, the change heatmap, and the resulting vector mask.">
+      <div class="category-pill">Visual Proof of Detection</div>
+      <h2 class="slide-title">Satellite SAR Analytics & Image Comparison</h2>
+
+      <div class="grid-4">
+        <div class="card">
+          <div class="card-title" style="color: var(--primary); font-size: 14px;">1. Pre-Flood Baseline</div>
+          <span class="badge-tag" style="background: #e0f2fe; color: #0369a1;">📅 29 June 2024</span>
+          <p style="font-size: 12px;">Sentinel-1 SAR baseline showing normal river channel and high diffuse backscatter across dry land.</p>
+        </div>
+
+        <div class="card">
+          <div class="card-title" style="color: var(--accent-red); font-size: 14px;">2. Peak Flood Capture</div>
+          <span class="badge-tag" style="background: #fee2e2; color: #b91c1c;">📅 11 July 2024</span>
+          <p style="font-size: 12px;">Massive specular reflection expansion and widespread radar signal loss captured through thick monsoon clouds.</p>
+        </div>
+
+        <div class="card">
+          <div class="card-title" style="color: var(--accent-amber); font-size: 14px;">3. SAR Change Delta</div>
+          <span class="badge-tag" style="background: #fef3c7; color: #b45309;">Δσ⁰ Delta (dB)</span>
+          <p style="font-size: 12px;">Ratio heatmap isolating exact zones of sudden radar signal attenuation, eliminating permanent lakes.</p>
+        </div>
+
+        <div class="card">
+          <div class="card-title" style="color: var(--accent-green); font-size: 14px;">4. Vector Flood Mask</div>
+          <span class="badge-tag" style="background: #dcfce7; color: #15803d;">723.94 km² Extent</span>
+          <p style="font-size: 12px;">Thresholded and morphologically cleaned binary mask converted to WGS84 GeoJSON polygons.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE 10: Tech Stack -->
+    <div class="slide-wrapper" id="slide-10" data-notes="Our technology stack is 100% open-source, spanning Sentinel-1 radar data, Python geospatial processing, QGIS risk analysis, Leaflet.js frontend, OSRM routing, and cloud deployment on Render.">
+      <div class="category-pill">Production Architecture</div>
+      <h2 class="slide-title">Complete Technology Stack & Deployment</h2>
+
+      <div class="grid-stack">
+        <div class="card">
+          <div class="card-title" style="color: var(--primary);">🛰️ Satellite Data & Sourcing</div>
+          <p>Copernicus Data Space Ecosystem (CDSE) &nbsp;•&nbsp; Sentinel-1 C-Band SAR (5.405 GHz) &nbsp;•&nbsp; OpenStreetMap (OSM) Road Infrastructure Graphs</p>
+        </div>
+
+        <div class="card">
+          <div class="card-title" style="color: var(--primary);">⚙️ Data Processing & GIS Analytics</div>
+          <p>Python 3.14 &nbsp;•&nbsp; Rasterio &nbsp;•&nbsp; GeoPandas &nbsp;•&nbsp; Shapely &nbsp;•&nbsp; Scipy Ndimage &nbsp;•&nbsp; QGIS 3.x Spatial Analysis & Proximity Buffering</p>
+        </div>
+
+        <div class="card">
+          <div class="card-title" style="color: var(--primary);">💻 Backend API & Web GIS Frontend</div>
+          <p>Flask REST API &nbsp;•&nbsp; Gunicorn WSGI &nbsp;•&nbsp; Leaflet.js 1.9 &nbsp;•&nbsp; Turf.js Spatial Math &nbsp;•&nbsp; OSRM Highway Routing Engine &nbsp;•&nbsp; HTML5/CSS3/Vanilla JS</p>
+        </div>
+
+        <div class="card">
+          <div class="card-title" style="color: var(--accent-green);">☁️ Cloud Deployment & Version Control</div>
+          <p>Render Cloud Web Service (Dynamic $PORT) &nbsp;•&nbsp; Procfile / render.yaml &nbsp;•&nbsp; Git / GitHub CI/CD &nbsp;•&nbsp; 100% Open Source</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE 11: Economics & Feasibility -->
+    <div class="slide-wrapper" id="slide-11" data-notes="Rudra's script: Our solution has zero licensing costs using open data, scales to thousands of concurrent users because spatial math runs in the browser, and costs under $10 a month to operate.">
+      <div class="category-pill">Rudra (Mechanical) — Economics & Feasibility</div>
+      <h2 class="slide-title">Operational Feasibility, Scalability & Disaster Economics</h2>
+
+      <div class="grid-3">
+        <div class="card">
+          <div class="card-title" style="color: var(--accent-green);">💰 Zero Licensing Costs</div>
+          <b>100% Free Data Streams</b>
+          <p style="font-size: 12px; margin-bottom: 8px;">Sentinel-1 radar imagery is free under ESA open access. OSM road networks are free and globally maintained.</p>
+          <b>No Proprietary Fees</b>
+          <p style="font-size: 12px;">Eliminates multi-thousand dollar proprietary ArcGIS / commercial satellite subscriptions.</p>
+        </div>
+
+        <div class="card">
+          <div class="card-title" style="color: var(--primary);">⚡ Extreme Scalability</div>
+          <b>Client-Side Distributed Math</b>
+          <p style="font-size: 12px; margin-bottom: 8px;">Spatial polygon collision testing and route avoidance execute client-side via Turf.js in the browser.</p>
+          <b>Server Never Crashes</b>
+          <p style="font-size: 12px;">Offloading spatial math allows thousands of concurrent disaster evacuees without server overloads.</p>
+        </div>
+
+        <div class="card">
+          <div class="card-title" style="color: var(--primary);">🌍 Global Portability</div>
+          <b>Universal Applicability</b>
+          <p style="font-size: 12px; margin-bottom: 8px;">Simply changing bounding-box coordinates adapts the pipeline to any flood basin globally.</p>
+          <b>Minimal Cloud Cost</b>
+          <p style="font-size: 12px;">Runs comfortably on lightweight cloud servers costing less than $10/month per state authority.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE 12: Conclusion -->
+    <div class="slide-wrapper slide-dark" id="slide-12" data-notes="In conclusion: our platform reduces disaster decision latency from hours to seconds, guarantees first responder safety through dynamic dry routing, and connects community aid directly on the map. We invite the judges to explore the live website.">
+      <div style="margin-bottom: 20px;">
+        <h2 style="font-size: 32px; font-weight: 800; color: #ffffff;">Disaster Management Impact & Summary</h2>
+        <p style="font-size: 15px; color: #94a3b8; margin-top: 4px;">Transforming Space Radar Intelligence into Ground-Level Life-Saving Action</p>
+      </div>
+
+      <div class="grid-3">
+        <div class="card">
+          <div class="card-title" style="color: #38bdf8;">⏱️ 6h ➔ 30s Latency</div>
+          <b style="font-size: 13px; color: #e2e8f0; margin-bottom: 6px;">Rapid Decision Speed</b>
+          <p>Replaces 6–8 hours of manual satellite downloading and GIS polygon tracing with an automated 30-second pipeline execution.</p>
+        </div>
+
+        <div class="card">
+          <div class="card-title" style="color: #34d399;">🚑 Zero Stranded Teams</div>
+          <b style="font-size: 13px; color: #e2e8f0; margin-bottom: 6px;">First Responder Safety</b>
+          <p>Safe Route Finder actively prevents rescue trucks from entering submerged road corridors by enforcing dry bypass routes.</p>
+        </div>
+
+        <div class="card">
+          <div class="card-title" style="color: #fbbf24;">🤝 Localized Mutual Aid</div>
+          <b style="font-size: 13px; color: #e2e8f0; margin-bottom: 6px;">Empowering Communities</b>
+          <p>Connects stranded victims needing water, medicine, or boats directly to volunteer donors on the map.</p>
+        </div>
+      </div>
+
+      <div style="margin-top: 24px; text-align: center; font-size: 14px; font-weight: 700; color: #38bdf8;">
+        🌐 Live Application: https://flood-risk-monitor.onrender.com/ &nbsp;|&nbsp; Ready for Immediate Deployment
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Bottom Speaker Notes -->
+  <footer>
+    <i class="fa-solid fa-microphone-lines" style="color: #38bdf8;"></i>
+    <div><b>Speaker Notes:</b> <span id="notesText">Good morning judges. We are presenting the Satellite Flood Risk & Relief Monitor...</span></div>
+  </footer>
+
+  <script>
+    let currentSlide = 1;
+    const totalSlides = 12;
+
+    function updateSlide() {
+      document.querySelectorAll('.slide-wrapper').forEach((el, idx) => {
+        el.classList.toggle('active', (idx + 1) === currentSlide);
+      });
+
+      document.getElementById('slideCount').textContent = `${currentSlide} / ${totalSlides}`;
+      document.getElementById('btnPrev').disabled = (currentSlide === 1);
+      document.getElementById('btnNext').disabled = (currentSlide === totalSlides);
+
+      const activeEl = document.getElementById(`slide-${currentSlide}`);
+      if (activeEl && activeEl.dataset.notes) {
+        document.getElementById('notesText').textContent = activeEl.dataset.notes;
+      }
+    }
+
+    function navigateSlide(dir) {
+      const next = currentSlide + dir;
+      if (next >= 1 && next <= totalSlides) {
+        currentSlide = next;
+        updateSlide();
+      }
+    }
+
+    // Keyboard Shortcuts (Arrow keys, Spacebar)
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowRight' || e.key === 'PageDown' || e.key === ' ') {
+        navigateSlide(1);
+      } else if (e.key === 'ArrowLeft' || e.key === 'PageUp') {
+        navigateSlide(-1);
+      }
+    });
+
+    updateSlide();
+  </script>
+</body>
+</html>
