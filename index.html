@@ -49,6 +49,10 @@
         <i class="fa-solid fa-satellite" aria-hidden="true"></i>
         <span>Satellite Analytics</span>
       </button>
+      <button id="btnViewPresentation" class="nav-view-btn" role="tab" aria-selected="false" aria-controls="view-presentation">
+        <i class="fa-solid fa-chalkboard-user" aria-hidden="true"></i>
+        <span>Presentation Deck</span>
+      </button>
     </nav>
 
     <!-- Quick Actions -->
@@ -506,6 +510,41 @@
         </div>
 
       </div>
+    </div>
+
+    <!-- ============================================================
+         VIEW 3: INTERACTIVE PRESENTATION DECK
+         ============================================================ -->
+    <div id="view-presentation" class="view-panel" style="display: none; flex: 1; flex-direction: column; background: #0f172a; overflow-y: auto;">
+      
+      <!-- Presentation Top Controls -->
+      <div style="background: #1e293b; padding: 12px 24px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #334155; color: white;">
+        <div style="display: flex; align-items: center; gap: 12px;">
+          <span style="font-weight: 800; font-size: 15px; color: #38bdf8;"><i class="fa-solid fa-chalkboard-user"></i> Space Innovation Hackathon Deck</span>
+          <span id="deckSlideCounter" style="background: #334155; padding: 3px 10px; border-radius: 6px; font-size: 13px; font-weight: 700; color: #94a3b8;">1 / 12</span>
+        </div>
+        <div style="display: flex; gap: 10px; align-items: center;">
+          <button id="btnDeckPrev" class="btn btn-outline btn-sm" style="color: white; border-color: #475569;"><i class="fa-solid fa-arrow-left"></i> Prev</button>
+          <button id="btnDeckNext" class="btn btn-outline btn-sm" style="color: white; border-color: #475569;">Next <i class="fa-solid fa-arrow-right"></i></button>
+          <a href="Satellite_Flood_Risk_Monitor_Presentation.pptx" download class="btn btn-sm" style="background: #059669; color: white; text-decoration: none; border-radius: 6px; font-weight: 700; padding: 6px 14px;">
+            <i class="fa-solid fa-download"></i> Download PPTX
+          </a>
+        </div>
+      </div>
+
+      <!-- Slide Display Stage -->
+      <div style="flex: 1; display: flex; align-items: center; justify-content: center; padding: 24px;">
+        <div style="width: 100%; max-width: 1100px; aspect-ratio: 16 / 9; background: #ffffff; border-radius: 12px; box-shadow: 0 20px 40px rgba(0,0,0,0.6); padding: 36px 44px; display: flex; flex-direction: column; overflow-y: auto; color: #0f172a;" id="presentationSlideContainer">
+          <!-- Slide contents injected dynamically by JavaScript -->
+        </div>
+      </div>
+
+      <!-- Speaker Notes Footer -->
+      <div style="background: #090d16; padding: 12px 24px; color: #94a3b8; font-size: 13px; border-top: 1px solid #1e293b; display: flex; align-items: center; gap: 12px;">
+        <i class="fa-solid fa-microphone-lines" style="color: #38bdf8;"></i>
+        <div><b style="color: #38bdf8;">Speaker Script:</b> <span id="deckNotesText">Good morning judges...</span></div>
+      </div>
+
     </div>
 
   </main>
