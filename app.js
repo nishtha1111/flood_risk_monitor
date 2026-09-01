@@ -44,7 +44,7 @@ document.addEventListener("DOMContentLoaded", () => {
 /**
  * Initialize the Leaflet Map
  */
-function initMap() {
+async function initMap() {
   const defaultCenter = [26.20, 91.65];
   const defaultZoom = 9;
 
@@ -54,8 +54,20 @@ function initMap() {
     zoomControl: true
   });
 
+  // Fetch API config
+  let cartoKey = "";
+  try {
+    const res = await fetch("/api/config");
+    const json = await res.json();
+    if (json.status === "success" && json.data.cartoApiKey) {
+      cartoKey = "?key=" + json.data.cartoApiKey;
+    }
+  } catch (err) {
+    console.error("Failed to fetch map config", err);
+  }
+
   // Base Tiles: CartoDB Positron
-  L.tileLayer("https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png", {
+  L.tileLayer(`https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png${cartoKey}`, {
     attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/">CARTO</a>',
     maxZoom: 19
   }).addTo(window.floodMap);

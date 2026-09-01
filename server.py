@@ -21,6 +21,9 @@ import threading
 import time
 from datetime import datetime, timezone
 from flask import Flask, jsonify, request, send_from_directory, make_response
+from dotenv import load_dotenv
+
+load_dotenv()
 
 import pipeline
 import ingest_sentinel1
@@ -61,6 +64,16 @@ def api_metadata():
         "status": "success",
         "data": meta,
         "server_time": datetime.now(timezone.utc).isoformat()
+    })
+
+@app.route("/api/config", methods=["GET"])
+def api_config():
+    """Returns frontend configuration like map API keys."""
+    return jsonify({
+        "status": "success",
+        "data": {
+            "cartoApiKey": os.environ.get("CARTO_API_KEY", "")
+        }
     })
 
 
