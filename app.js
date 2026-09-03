@@ -54,10 +54,23 @@ async function initMap() {
     zoomControl: true
   });
 
-  // Base Tiles: OpenStreetMap (free, no API key required)
-  L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
-    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-    maxZoom: 19
+  // Fetch API config
+  let cartoKey = "";
+  try {
+    const res = await fetch("/api/config");
+    const json = await res.json();
+    if (json.status === "success" && json.data.cartoApiKey) {
+      cartoKey = "?api_key=" + json.data.cartoApiKey;
+    }
+  } catch (err) {
+    console.error("Failed to fetch map config", err);
+  }
+
+  // Base Tiles: CartoDB Positron
+  L.tileLayer(`https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png${cartoKey}`, {
+    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/">CARTO</a>',
+    maxZoom: 19,
+    subdomains: "abcd"
   }).addTo(window.floodMap);
 
   // Add all layer groups to map
