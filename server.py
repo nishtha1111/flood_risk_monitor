@@ -170,22 +170,30 @@ def api_trigger_pipeline():
 # STATIC ASSETS & DASHBOARD SERVING
 # ============================================================
 
+def serve_file_manually(filepath):
+    if not os.path.isfile(filepath):
+        return jsonify({"error": f"File not found"}), 404
+    with open(filepath, 'rb') as f:
+        data = f.read()
+    import mimetypes
+    mime_type, _ = mimetypes.guess_type(filepath)
+    resp = make_response(data)
+    if mime_type:
+        resp.headers['Content-Type'] = mime_type
+    return resp
+
 @app.route("/")
 def index():
-    return send_from_directory(ROOT_DIR, "index.html")
-
+    return serve_file_manually(os.path.join(ROOT_DIR, "index.html"))
 
 @app.route("/presentation")
 def presentation_page():
-    return send_from_directory(ROOT_DIR, "presentation.html")
-
+    return serve_file_manually(os.path.join(ROOT_DIR, "presentation.html"))
 
 @app.route("/<path:filename>")
 def serve_static_file(filename):
     full_path = os.path.join(ROOT_DIR, filename)
-    if os.path.isfile(full_path):
-        return send_from_directory(ROOT_DIR, filename)
-    return jsonify({"error": f"File '{filename}' not found"}), 404
+    return serve_file_manually(full_path)
 
 
 # ============================================================
