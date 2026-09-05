@@ -54,17 +54,7 @@ async function initMap() {
     zoomControl: true
   });
 
-  // Fetch API config
-  let cartoKey = "";
-  try {
-    const res = await fetch("/api/config");
-    const json = await res.json();
-    if (json.status === "success" && json.data.cartoApiKey) {
-      cartoKey = "?api_key=" + json.data.cartoApiKey;
-    }
-  } catch (err) {
-    console.error("Failed to fetch map config", err);
-  }
+
 
   // Base Tiles: CartoDB Positron
   L.tileLayer(`https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png`, {
