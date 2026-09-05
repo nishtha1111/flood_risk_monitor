@@ -20,8 +20,12 @@ import json
 import threading
 import time
 from datetime import datetime, timezone
+import mimetypes
 from flask import Flask, jsonify, request, send_from_directory, make_response
 from dotenv import load_dotenv
+
+mimetypes.add_type('application/javascript', '.js')
+mimetypes.add_type('text/css', '.css')
 
 load_dotenv()
 
