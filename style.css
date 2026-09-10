@@ -41,6 +41,7 @@
 
 body {
   height: 100vh;
+  height: 100dvh;
   width: 100vw;
   overflow: hidden;
   display: flex;
@@ -250,6 +251,7 @@ body {
 .main-container {
   flex: 1;
   height: calc(100vh - 64px);
+  height: calc(100dvh - 64px);
   position: relative;
   overflow: hidden;
 }
@@ -915,6 +917,7 @@ body {
   left: 0;
   width: 100vw;
   height: 100vh;
+  height: 100dvh;
   background: rgba(15, 23, 42, 0.65);
   backdrop-filter: blur(4px);
   z-index: 2000;
@@ -936,6 +939,7 @@ body {
   width: 90%;
   max-width: 480px;
   max-height: 90vh;
+  max-height: 90dvh;
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-lg);
   overflow-y: auto;
@@ -1156,6 +1160,16 @@ body {
 
   .nav-actions {
     gap: 4px;
+    order: 2;
+    width: 100%;
+    flex-wrap: wrap;
+    margin-top: 8px;
+  }
+  
+  .nav-actions .btn {
+    flex: 1;
+    min-width: calc(50% - 4px);
+    justify-content: center;
   }
   
   .btn {
@@ -1165,6 +1179,7 @@ body {
 
   .main-container {
     height: calc(100vh - 110px);
+    height: calc(100dvh - 110px);
   }
 
   .mobile-sidebar-toggle {
@@ -1200,5 +1215,9 @@ body {
     left: 12px;
     padding: 8px 12px;
     font-size: 11px;
+    max-height: 160px;
+    overflow-y: auto;
+    max-width: 60%;
+    line-height: 18px;
   }
 }
