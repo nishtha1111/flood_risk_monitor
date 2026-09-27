@@ -454,7 +454,8 @@ function displayRouteResults(route, safetyStatus, hazards) {
   const notice = document.getElementById("routeNoticeText");
   const turnBox = document.getElementById("routeTurnSteps");
 
-  resultCard.style.display = "block";
+  resultCard.style.display = "flex";
+  if (window.setMobileDrawerExpanded) window.setMobileDrawerExpanded(true);
 
   const distanceKm = (route.distance / 1000).toFixed(1);
   const timeMin = Math.round(route.duration / 60);

@@ -35,6 +35,8 @@ document.addEventListener("DOMContentLoaded", () => {
   setupViewSwitcher();
   setupSidebarTabs();
   setupMobileDrawer();
+  setupMobileNavMenu();
+  setupMapLegendToggle();
   setupLayerToggles();
   setupKeyboardAccessibility();
   setupLiveStreamPoller();
@@ -149,6 +151,8 @@ async function pollLatestMetadata() {
     if (elScene) elScene.textContent = sceneId;
     if (elAcq) elAcq.textContent = formattedDate;
     if (elSatBadge) elSatBadge.textContent = satellite;
+    const elAnalyticsAcq = document.getElementById("analyticsAcqDate");
+    if (elAnalyticsAcq) elAnalyticsAcq.textContent = formattedDate;
 
     // Check if new scene arrived
     if (window.currentSceneId && window.currentSceneId !== sceneId) {
@@ -642,16 +646,96 @@ function renderCurrentDeckSlide() {
 
 
 /**
- * Setup Mobile Sidebar Sliding Drawer
+ * Setup Mobile Sidebar Sliding Drawer / Bottom Sheet
  */
 function setupMobileDrawer() {
   const toggleBtn = document.getElementById("btnToggleMobileSidebar");
   const sidebar = document.getElementById("appSidebar");
+  const sheetHandle = document.getElementById("mobileSheetHandle");
+  const collapseBtn = document.getElementById("btnCollapseMobileSheet");
+  const backdrop = document.getElementById("mobileSheetBackdrop");
 
-  if (toggleBtn && sidebar) {
+  window.setMobileDrawerExpanded = function(isExpanded) {
+    if (!sidebar) return;
+    if (isExpanded) {
+      sidebar.classList.add("expanded");
+      if (backdrop) backdrop.classList.add("active");
+    } else {
+      sidebar.classList.remove("expanded");
+      if (backdrop) backdrop.classList.remove("active");
+    }
+    if (toggleBtn) toggleBtn.setAttribute("aria-expanded", isExpanded ? "true" : "false");
+    setTimeout(() => {
+      if (window.floodMap) window.floodMap.invalidateSize();
+    }, 320);
+  };
+
+  if (sheetHandle) {
+    sheetHandle.addEventListener("click", () => {
+      const isExpanded = sidebar.classList.contains("expanded");
+      window.setMobileDrawerExpanded(!isExpanded);
+    });
+  }
+
+  if (collapseBtn) {
+    collapseBtn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      const isExpanded = sidebar.classList.contains("expanded");
+      window.setMobileDrawerExpanded(!isExpanded);
+    });
+  }
+
+  if (toggleBtn) {
     toggleBtn.addEventListener("click", () => {
-      const isOpen = sidebar.classList.toggle("mobile-open");
+      window.setMobileDrawerExpanded(true);
+    });
+  }
+
+  if (backdrop) {
+    backdrop.addEventListener("click", () => {
+      window.setMobileDrawerExpanded(false);
+    });
+  }
+}
+
+/**
+ * Setup Mobile Hamburger Navigation Menu
+ */
+function setupMobileNavMenu() {
+  const toggleBtn = document.getElementById("btnMobileMenuToggle");
+  const navDrawer = document.getElementById("mobileNavDrawer");
+
+  if (toggleBtn && navDrawer) {
+    toggleBtn.addEventListener("click", () => {
+      const isOpen = navDrawer.classList.toggle("open");
       toggleBtn.setAttribute("aria-expanded", isOpen ? "true" : "false");
+    });
+  }
+
+  window.closeMobileMenu = function() {
+    if (navDrawer) navDrawer.classList.remove("open");
+    if (toggleBtn) toggleBtn.setAttribute("aria-expanded", "false");
+  };
+
+  document.addEventListener("click", (e) => {
+    if (navDrawer && navDrawer.classList.contains("open")) {
+      if (!navDrawer.contains(e.target) && !toggleBtn.contains(e.target)) {
+        window.closeMobileMenu();
+      }
+    }
+  });
+}
+
+/**
+ * Setup Collapsible Map Legend
+ */
+function setupMapLegendToggle() {
+  const btnToggle = document.getElementById("btnToggleLegend");
+  const legend = document.getElementById("mapLegend");
+
+  if (btnToggle && legend) {
+    btnToggle.addEventListener("click", () => {
+      legend.classList.toggle("collapsed");
     });
   }
 }
@@ -916,6 +1000,10 @@ function computeLiveMetrics() {
   if (elExecFlood) elExecFlood.textContent = `${totalFloodedKm2.toFixed(2)} km²`;
   if (elHigh) elHigh.textContent = `${highRiskCount} Zones`;
   if (elHosp) elHosp.textContent = `${hospCount}`;
+  const elMobileSummary = document.getElementById("mobileSummaryChip");
+  if (elMobileSummary) {
+    elMobileSummary.textContent = `${totalFloodedKm2.toFixed(1)} km² • ${highRiskCount} Zones`;
+  }
 }
 
 /**
@@ -972,6 +1060,7 @@ function setupSidebarTabs() {
     navFindRoute.addEventListener("click", () => {
       window.switchAppView("operations");
       document.querySelector('[data-tab="tab-routing"]').click();
+      if (window.setMobileDrawerExpanded) window.setMobileDrawerExpanded(true);
     });
   }
 }
@@ -1038,6 +1127,7 @@ window.setRouteDestination = function(coordsStr, name) {
   const destInput = document.getElementById("routeEndInput");
   if (destInput) destInput.value = coordsStr;
   window.showToast(`Destination set to: ${name}`, "success");
+  if (window.setMobileDrawerExpanded) window.setMobileDrawerExpanded(true);
 };
 
 /**
