@@ -26,6 +26,8 @@ from dotenv import load_dotenv
 
 mimetypes.add_type('application/javascript', '.js')
 mimetypes.add_type('text/css', '.css')
+mimetypes.add_type('application/geo+json', '.geojson')
+mimetypes.add_type('application/json', '.json')
 
 load_dotenv()
 
@@ -35,8 +37,8 @@ import ingest_sentinel1
 ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
 app = Flask(__name__, static_folder=None)
 PORT = int(os.environ.get("PORT", 8000))
-MANIFEST_PATH = os.path.join("data", "manifest.json")
-OUTPUT_DIR = "output"
+MANIFEST_PATH = os.path.join(ROOT_DIR, "data", "manifest.json")
+OUTPUT_DIR = os.path.join(ROOT_DIR, "output")
 
 # Global Pipeline Lock to avoid concurrent execution clashes
 pipeline_lock = threading.Lock()
@@ -171,12 +173,12 @@ def api_trigger_pipeline():
 # ============================================================
 
 def serve_file_manually(filepath):
-    if not os.path.isfile(filepath):
-        return jsonify({"error": f"File not found"}), 404
-    with open(filepath, 'rb') as f:
+    resolved = os.path.abspath(filepath)
+    if not resolved.startswith(os.path.abspath(ROOT_DIR)) or not os.path.isfile(resolved):
+        return jsonify({"error": "File not found"}), 404
+    with open(resolved, 'rb') as f:
         data = f.read()
-    import mimetypes
-    mime_type, _ = mimetypes.guess_type(filepath)
+    mime_type, _ = mimetypes.guess_type(resolved)
     resp = make_response(data)
     if mime_type:
         resp.headers['Content-Type'] = mime_type

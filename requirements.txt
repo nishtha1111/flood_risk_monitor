@@ -5,6 +5,8 @@ geopandas
 rasterio
 shapely
 matplotlib
+scipy
+numpy
 streamlit
 streamlit-folium
 folium
