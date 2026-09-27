@@ -21,7 +21,7 @@ import threading
 import time
 from datetime import datetime, timezone
 import mimetypes
-from flask import Flask, jsonify, request, send_from_directory, make_response
+from flask import Flask, jsonify, request, send_from_directory, make_response, redirect
 from dotenv import load_dotenv
 
 mimetypes.add_type('application/javascript', '.js')
@@ -190,7 +190,7 @@ def index():
 
 @app.route("/presentation")
 def presentation_page():
-    return serve_file_manually(os.path.join(ROOT_DIR, "presentation.html"))
+    return redirect("/")
 
 @app.route("/<path:filename>")
 def serve_static_file(filename):

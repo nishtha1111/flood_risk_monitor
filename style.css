@@ -494,11 +494,6 @@ html, body {
   background-color: var(--bg-page);
 }
 
-#view-presentation.active {
-  display: flex;
-  flex-direction: column;
-}
-
 /* ============================================================
    OPERATIONS DASHBOARD: SIDEBAR & WORKSPACE
    ============================================================ */
@@ -1981,22 +1976,6 @@ select.form-control {
   /* Prevent iOS Safari auto-zoom on input focus */
   .form-control, select.form-control {
     font-size: 14px !important;
-  }
-
-  /* Reflow slide columns into single column on mobile */
-  #presentationSlideContainer [style*="grid-template-columns"] {
-    grid-template-columns: 1fr !important;
-    gap: 10px !important;
-  }
-
-  #presentationSlideContainer h1 {
-    font-size: 20px !important;
-    line-height: 1.3 !important;
-  }
-
-  #presentationSlideContainer h2 {
-    font-size: 17px !important;
-    line-height: 1.3 !important;
   }
 
   /* Mobile Leaflet Controls */
