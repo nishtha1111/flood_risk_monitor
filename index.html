@@ -18,6 +18,12 @@
 
   <!-- App Styles -->
   <link rel="stylesheet" href="style.css">
+
+  <!-- Preload Satellite Gallery Images for Instant Rendering -->
+  <link rel="preload" as="image" href="output/before_flood.png">
+  <link rel="preload" as="image" href="output/during_flood.png">
+  <link rel="preload" as="image" href="output/sar_change.png">
+  <link rel="preload" as="image" href="output/flood_detected.png">
 </head>
 <body>
 
@@ -191,7 +197,7 @@
               <div class="telemetry-grid">
                 <div class="telemetry-item">
                   <span class="telemetry-label">Last Pass</span>
-                  <span class="telemetry-val" id="sceneAcqDateText">Aug 21, 2026 05:24 AM</span>
+                  <span class="telemetry-val" id="sceneAcqDateText">Loading...</span>
                 </div>
                 <div class="telemetry-item">
                   <span class="telemetry-label">Revisit Cadence</span>
@@ -541,7 +547,7 @@
           </div>
           <div class="sensor-spec-item">
             <span class="spec-label">Acquisition Pass</span>
-            <span class="spec-val" id="analyticsAcqDate">Aug 21, 2026 • 05:24 AM</span>
+            <span class="spec-val" id="analyticsAcqDate">Loading...</span>
           </div>
           <div class="sensor-spec-item">
             <span class="spec-label">Baseline (Before)</span>
@@ -631,7 +637,7 @@
             <!-- Before Flood -->
             <div class="gallery-card" onclick="window.openImageZoom('output/before_flood.png', 'Before Flood - 29 June 2024 (Sentinel-1 SAR Base)')">
               <div class="gallery-img-wrapper">
-                <img src="output/before_flood.png" alt="Before Flood Satellite Image - 29 June 2024" loading="lazy">
+                <img src="output/before_flood.png" alt="Before Flood Satellite Image - 29 June 2024" decoding="async" loading="eager">
                 <span class="gallery-badge badge-before">Before Flood</span>
               </div>
               <div class="gallery-caption">
@@ -643,7 +649,7 @@
             <!-- During Flood -->
             <div class="gallery-card" onclick="window.openImageZoom('output/during_flood.png', 'During Flood - 11 July 2024 (Sentinel-1 SAR Peak Inundation)')">
               <div class="gallery-img-wrapper">
-                <img src="output/during_flood.png" alt="During Flood Satellite Image - 11 July 2024" loading="lazy">
+                <img src="output/during_flood.png" alt="During Flood Satellite Image - 11 July 2024" decoding="async" loading="eager">
                 <span class="gallery-badge badge-during">During Flood</span>
               </div>
               <div class="gallery-caption">
@@ -655,7 +661,7 @@
             <!-- SAR Change Detection Heatmap -->
             <div class="gallery-card" onclick="window.openImageZoom('output/sar_change.png', 'SAR Backscatter Difference Heatmap (June 29 -> July 11)')">
               <div class="gallery-img-wrapper">
-                <img src="output/sar_change.png" alt="SAR Change Detection Heatmap" loading="lazy">
+                <img src="output/sar_change.png" alt="SAR Change Detection Heatmap" decoding="async" loading="eager">
                 <span class="gallery-badge badge-change">SAR Change Heatmap</span>
               </div>
               <div class="gallery-caption">
@@ -667,7 +673,7 @@
             <!-- Detected Flood Extent Mask -->
             <div class="gallery-card" onclick="window.openImageZoom('output/flood_detected.png', 'Classified Flood Extent Mask - 11 July 2024')">
               <div class="gallery-img-wrapper">
-                <img src="output/flood_detected.png" alt="Classified Flood Extent Mask" loading="lazy">
+                <img src="output/flood_detected.png" alt="Classified Flood Extent Mask" decoding="async" loading="eager">
                 <span class="gallery-badge badge-detected">Detected Flood Mask</span>
               </div>
               <div class="gallery-caption">

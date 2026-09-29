@@ -64,6 +64,6 @@ jobs:
           if git diff --staged --quiet; then
             echo "No changes detected to commit."
           else
-            git commit -m "chore(data): auto-update Sentinel-1 flood extent [skip ci]"
+            git commit -m "chore(data): auto-update Sentinel-1 flood extent"
             git push
           fi

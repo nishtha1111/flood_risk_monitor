@@ -49,7 +49,11 @@ def add_cors_headers(response):
     response.headers["Access-Control-Allow-Origin"] = "*"
     response.headers["Access-Control-Allow-Methods"] = "GET, POST, OPTIONS"
     response.headers["Access-Control-Allow-Headers"] = "Content-Type, Authorization"
-    response.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
+    # Only disable caching for dynamic API responses; cache static images and assets
+    if request.path.startswith("/api/"):
+        response.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
+    else:
+        response.headers["Cache-Control"] = "public, max-age=604800, stale-while-revalidate=86400"
     return response
 
 
