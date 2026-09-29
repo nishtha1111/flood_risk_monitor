@@ -134,11 +134,19 @@ async function pollLatestMetadata() {
     const acqDate = meta.last_scene_date || "2024-07-11";
     const satellite = meta.satellite || "Sentinel-1A SAR";
 
-    // Format display date
+    // Format display date in Indian Standard Time (IST)
     let formattedDate = acqDate;
     try {
       const d = new Date(acqDate);
-      formattedDate = d.toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' }) + " " + d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+      formattedDate = d.toLocaleString("en-US", {
+        timeZone: "Asia/Kolkata",
+        month: "short",
+        day: "numeric",
+        year: "numeric",
+        hour: "2-digit",
+        minute: "2-digit",
+        hour12: true
+      }) + " IST";
     } catch (e) {}
 
     // Update UI elements

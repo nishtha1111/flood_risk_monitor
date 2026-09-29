@@ -1,6 +1,8 @@
 # Satellite data
 *.SAFE/
 *.SAFE.zip
+data/before/
+data/during/
 
 # Python cache
 __pycache__/

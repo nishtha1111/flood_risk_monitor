@@ -198,31 +198,8 @@ def serve_static_file(filename):
     return serve_file_manually(full_path)
 
 
-# ============================================================
-# BACKGROUND SCHEDULED POLLER (DAEMON)
-# ============================================================
-
-def start_background_poller(interval_seconds=3600):
-    """Periodically checks Copernicus CDSE for new satellite scenes."""
-    def poller_loop():
-        print(f"[Background Poller] Sentinel-1 satellite watcher active (interval: {interval_seconds}s).")
-        while True:
-            time.sleep(interval_seconds)
-            try:
-                print("[Background Poller] Checking for fresh satellite imagery...")
-                with pipeline_lock:
-                    pipeline.run_pipeline(force=False)
-            except Exception as e:
-                print(f"[Background Poller Warning] {e}")
-
-    t = threading.Thread(target=poller_loop, daemon=True)
-    t.start()
-
-
 if __name__ == "__main__":
     print("=" * 60)
     print(f"STARTING SENTINEL-1 FLOOD MONITOR BACKEND API (PORT {PORT})")
     print("=" * 60)
-    
-    start_background_poller(interval_seconds=3600)
     app.run(host="0.0.0.0", port=PORT, debug=False, threaded=True)
