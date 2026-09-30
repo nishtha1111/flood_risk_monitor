@@ -9,9 +9,9 @@
   "satellite": "Sentinel-1A (C-band SAR)",
   "polarization": "VV+VH",
   "product_type": "IW_GRDH_1SDV",
-  "last_check_timestamp": "2026-09-29T14:08:24.761392+00:00",
-  "last_processed_scene_id": "S1D_IW_GRDH_1SDV_20260918T115644_20260918T115709_004632_008A3D_2DFF.SAFE",
-  "last_scene_date": "2026-09-18T11:56:44Z",
+  "last_check_timestamp": "2026-09-30T22:11:05.940370+00:00",
+  "last_processed_scene_id": "S1D_IW_GRDH_1SDV_20260930T115644_20260930T115709_004807_009055_37C2.SAFE",
+  "last_scene_date": "2026-09-30T11:56:44Z",
   "history": [
     {
       "scene_id": "S1A_IW_GRDH_1SDV_20240629T115716_20240629T115741_054538_06A32B_151F",
@@ -40,6 +40,14 @@
       "acquisition_date": "2026-09-18T11:56:44Z",
       "processed_timestamp": "2026-09-29T14:08:24.761392+00:00",
       "flooded_area_km2": 8917.39,
+      "status": "PROCESSED",
+      "output_geojson": "data/flood_extent.geojson"
+    },
+    {
+      "scene_id": "S1D_IW_GRDH_1SDV_20260930T115644_20260930T115709_004807_009055_37C2.SAFE",
+      "acquisition_date": "2026-09-30T11:56:44Z",
+      "processed_timestamp": "2026-09-30T22:11:05.940370+00:00",
+      "flooded_area_km2": 9299.13,
       "status": "PROCESSED",
       "output_geojson": "data/flood_extent.geojson"
     }
